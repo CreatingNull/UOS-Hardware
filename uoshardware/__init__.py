@@ -5,9 +5,7 @@ VOLATILE = 1
 NON_VOLATILE = 2
 
 
-from logging import FileHandler
-from logging import Formatter
-from logging import getLogger
+from logging import FileHandler, Formatter, getLogger
 from pathlib import Path
 
 

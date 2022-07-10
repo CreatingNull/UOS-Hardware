@@ -2,10 +2,10 @@
 import pytest
 
 from uoshardware import UOSCommunicationError, UOSUnsupportedError
+from uoshardware.abstractions import UOS_SCHEMA, UOSInterface
 from uoshardware.devices import Interface, enumerate_system_devices
 from uoshardware.interface import UOSDevice
 from uoshardware.stub import Stub
-from uoshardware.abstractions import UOS_SCHEMA, UOSInterface
 
 
 class TestHardwareCOMInterface:
@@ -93,9 +93,7 @@ class TestHardwareCOMInterface:
         devices = enumerate_system_devices()
         assert isinstance(devices, list)
         assert len(devices) > 0
-        assert all(
-            isinstance(device, UOSInterface) for device in devices
-        )
+        assert all(isinstance(device, UOSInterface) for device in devices)
         devices = enumerate_system_devices(Interface.STUB)
         assert len(devices) == 1
         assert isinstance(devices[0], Stub)
@@ -133,18 +131,14 @@ class TestHardwareCOMAbstractions:
         """Using the base class directly should throw an error."""
         with pytest.raises(UOSUnsupportedError):
             # noinspection PyTypeChecker
-            UOSInterface.execute_instruction(
-                self=None, address=10, payload=()
-            )
+            UOSInterface.execute_instruction(self=None, address=10, payload=())
 
     @staticmethod
     def test_read_response():
         """Using the base class directly should throw an error."""
         with pytest.raises(UOSUnsupportedError):
             # noinspection PyTypeChecker
-            UOSInterface.read_response(
-                self=None, expect_packets=1, timeout_s=2
-            )
+            UOSInterface.read_response(self=None, expect_packets=1, timeout_s=2)
 
     @staticmethod
     def test_hard_reset():
@@ -211,10 +205,7 @@ class TestHardwareCOMAbstractions:
     def test_get_npc_checksum(test_packet_data: [], expected_lrc: int):
         """Checks the computation of LRC checksums for some known packets."""
         print(f"\n -> packet: {test_packet_data}, lrc:{expected_lrc}")
-        assert (
-            UOSInterface.get_npc_checksum(test_packet_data)
-            == expected_lrc
-        )
+        assert UOSInterface.get_npc_checksum(test_packet_data) == expected_lrc
 
     @staticmethod
     @pytest.mark.parametrize(

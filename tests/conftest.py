@@ -1,8 +1,8 @@
 """Module for package test configuration, scope=session."""
 import pytest
 
-from uoshardware.interface import UOSDevice
 from uoshardware.devices import Interface
+from uoshardware.interface import UOSDevice
 
 DEVICES = {
     "Arduino Nano 3 LAZY": {

@@ -1,10 +1,10 @@
 """Module defining supported hardware definitions."""
-from enum import Enum
 import sys
+from enum import Enum
 
-from uoshardware.abstractions import Device, Pin, UOS_SCHEMA
-from uoshardware.stub import Stub
+from uoshardware.abstractions import UOS_SCHEMA, Device, Pin
 from uoshardware.serial import Serial
+from uoshardware.stub import Stub
 
 
 class Interface(Enum):
