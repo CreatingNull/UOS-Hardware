@@ -53,4 +53,4 @@ def uos_identities(request):
 
 def pytest_addoption(parser):
     """Adds USB serial connection optional CLI argument."""
-    parser.addoption("--usb-serial", action="store", default=None)
+    parser.addoption("--serial", action="store", default=None)

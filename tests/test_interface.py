@@ -1,4 +1,4 @@
-"""Unit tests for the HardwareCOM package."""
+"""Unit tests for the hardware interface module."""
 import pytest
 
 from uoshardware import UOSCommunicationError, UOSUnsupportedError

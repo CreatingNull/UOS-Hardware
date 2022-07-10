@@ -6,7 +6,7 @@ import pytest
 from uoshardware.serial import Serial
 
 
-class TestNPCSerialPort:
+class TestSerialPort:
     """Test suite for the low level serial backend."""
 
     @staticmethod
