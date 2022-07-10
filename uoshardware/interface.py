@@ -2,8 +2,7 @@
 from logging import getLogger as Log
 from typing import Union
 
-from uoshardware import (SUPER_VOLATILE, UOSCommunicationError,
-                         UOSUnsupportedError)
+from uoshardware import SUPER_VOLATILE, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import ComResult, Device, InstructionArguments
 from uoshardware.devices import Interface, get_device_definition
 from uoshardware.serial import Serial

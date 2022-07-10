@@ -1,8 +1,7 @@
 """Package is used as a simulated UOSInteface for test purposes."""
 from typing import Tuple
 
-from uoshardware.abstractions import (UOS_SCHEMA, ComResult, UOSFunction,
-                                      UOSInterface)
+from uoshardware.abstractions import UOS_SCHEMA, ComResult, UOSFunction, UOSInterface
 
 
 class Stub(UOSInterface):
