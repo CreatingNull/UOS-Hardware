@@ -11,7 +11,6 @@ repos:
     -   id: mixed-line-ending
     -   id: check-case-conflict
     -   id: check-ast
-    -   id: requirements-txt-fixer
 -   repo: https://github.com/psf/black
     rev: 22.6.0
     hooks:
@@ -25,6 +24,10 @@ repos:
     rev: v1.4
     hooks:
     -   id: docformatter
+-   repo: https://github.com/asottile/dead
+    rev: v1.5.0
+    hooks:
+    -   id: dead
 -   repo: local
     hooks:
     # Pylint is run as local hook to make use of the repo venv.

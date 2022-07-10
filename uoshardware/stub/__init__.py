@@ -41,7 +41,10 @@ class Stub(UOSInterface):
                     return ComResult(True)
         return ComResult(False)
 
-    def read_response(self, expect_packets: int, timeout_s: float) -> ComResult:
+    # Dead code detection false positive due to abstract interface.
+    def read_response(
+        self, expect_packets: int, timeout_s: float  # dead: disable
+    ) -> ComResult:
         """Simulates gathering the response from an instruction.
 
         Should have already executed an instruction. If no response is

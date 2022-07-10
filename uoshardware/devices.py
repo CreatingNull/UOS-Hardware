@@ -14,7 +14,8 @@ class Interface(Enum):
     SERIAL = Serial.__name__
 
 
-def enumerate_system_devices(interface_filter: Interface = None) -> []:
+# This is an interface for client implementations dead code false positive.
+def enumerate_system_devices(interface_filter: Interface = None) -> []:  # dead: disable
     """Iterates through all interfaces and locates available devices.
 
     :param interface_filter: Interface enum to limit the search to a single interface type.

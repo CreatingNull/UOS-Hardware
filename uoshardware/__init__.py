@@ -2,16 +2,18 @@
 from logging import FileHandler, Formatter, getLogger
 from pathlib import Path
 
+# Dead code false positive as these are user facing convenience constants.
 SUPER_VOLATILE = 0
-VOLATILE = 1
-NON_VOLATILE = 2
+VOLATILE = 1  # dead: disable
+NON_VOLATILE = 2  # dead: disable
 
 
-def configure_logs(name: str, level: int, base_path: Path):
+# Dead code false positive as interface intended to be used by client.
+def configure_logs(name: str, level: int, base_path: Path):  # dead: disable
     """Per-package logs must be manually configured to prefix correctly."""
     logger = getLogger(name)
     logger.setLevel(level)
-    # Dont capture to console as custom messages only, root logger captures stderr
+    # Don't capture to console as custom messages only, root logger captures stderr
     logger.propagate = False
     log_dir = Path(base_path.joinpath(Path("logs/")))
     if not log_dir.exists():
@@ -33,20 +35,3 @@ class UOSUnsupportedError(UOSError):
 
 class UOSCommunicationError(UOSError):
     """Exception while communicating with a UOS Device."""
-
-
-class UOSConfigurationError(UOSError):
-    """Exception caused by the setup / config of the UOS Device."""
-
-
-class UOSDatabaseError(UOSError):
-    """Caused by an exception or illegal operation on the database."""
-
-
-def register_logs(level, base_path: Path):
-    """Configures the log files for the hardware COM package.
-
-    :param level: Set the logger level, debug ect. Use the constants from logging lib.
-    :param base_path: Set the logging directory.
-    """
-    configure_logs(__name__, level=level, base_path=base_path)

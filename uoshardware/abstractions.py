@@ -76,8 +76,11 @@ class InstructionArguments:
 class UOSInterface(metaclass=ABCMeta):
     """Base class for low level UOS interfaces classes to inherit."""
 
+    # Dead code suppression used as abstract interfaces are false positives.
     @abstractmethod
-    def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> ComResult:
+    def execute_instruction(
+        self, address: int, payload: Tuple[int, ...]  # dead: disable
+    ) -> ComResult:
         """Abstract method for executing instructions on UOSInterfaces.
 
         :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
@@ -90,7 +93,9 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
     @abstractmethod
-    def read_response(self, expect_packets: int, timeout_s: float) -> ComResult:
+    def read_response(
+        self, expect_packets: int, timeout_s: float  # dead: disable
+    ) -> ComResult:
         """Abstract method for reading ACK and Data packets from a
         UOSInterface.
 
