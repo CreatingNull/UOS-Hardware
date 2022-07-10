@@ -112,13 +112,11 @@ class UOSDevice:
     def get_adc_input(
         self,
         pin: int,
-        level: int,
         volatility: int = SUPER_VOLATILE,
     ) -> ComResult:
         """Reads the current 10 bit ADC value.
 
         :param pin: The index of the analogue pin to read
-        :param level: Reserved for future use.
         :param volatility: How volatile should the command be, use constants from HardwareCOM.
         :return: ComResult object containing the ADC readings.
         """
@@ -228,7 +226,7 @@ class UOSDevice:
             )
         ):
             Log(__name__).debug(
-                "Known functions %s", self.device.functions_enabled.keys().__str__()
+                "Known functions %s", str(self.device.functions_enabled.keys())
             )
             raise UOSUnsupportedError(
                 f"{function_name}({volatility}) has not been implemented for {self.identity}"

@@ -1,12 +1,10 @@
 """The high level interface for communicating with UOS devices."""
+from logging import FileHandler, Formatter, getLogger
+from pathlib import Path
 
 SUPER_VOLATILE = 0
 VOLATILE = 1
 NON_VOLATILE = 2
-
-
-from logging import FileHandler, Formatter, getLogger
-from pathlib import Path
 
 
 def configure_logs(name: str, level: int, base_path: Path):

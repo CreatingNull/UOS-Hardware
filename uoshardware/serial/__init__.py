@@ -75,7 +75,7 @@ class Serial(UOSInterface):
             Log(__name__).error(
                 "Opening %s threw error %s",
                 self._port.device if self._port is not None else "None",
-                exception.__str__(),
+                str(exception),
             )
             if (
                 exception.errno == 13
@@ -96,9 +96,7 @@ class Serial(UOSInterface):
         try:
             self._device.close()
         except SerialException as exception:
-            Log(__name__).debug(
-                "Closing the connection threw error %s", exception.__str__()
-            )
+            Log(__name__).debug("Closing the connection threw error %s", str(exception))
             self._device = None
             return False
         Log(__name__).debug("Connection closed successfully")

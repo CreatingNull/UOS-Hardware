@@ -25,3 +25,18 @@ repos:
     rev: v1.4
     hooks:
     -   id: docformatter
+-   repo: local
+    hooks:
+    # Pylint is run as local hook to make use of the repo venv.
+    -   id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [ python ]
+        require_serial: true
+-   repo: https://github.com/PyCQA/bandit
+    rev: 1.7.4
+    hooks:
+    -   id: bandit
+        # Assert is used exclusively in pytest.
+        args: ["--skip=B101"]
