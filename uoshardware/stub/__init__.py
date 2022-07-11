@@ -1,4 +1,4 @@
-"""Package is used as a simulated UOSInteface for test purposes."""
+"""Package is used as a simulated UOSInterface for test purposes."""
 from typing import Tuple
 
 from uoshardware.abstractions import UOS_SCHEMA, ComResult, UOSFunction, UOSInterface
