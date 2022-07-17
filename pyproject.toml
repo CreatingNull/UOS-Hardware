@@ -6,6 +6,7 @@ authors = ["nulltek <steve.public@nulltek.xyz>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
+# Note if changing project python versions considerations should be made for github workflow version.
 python = "^3.10"
 pyserial = "^3.5"
 pylint = "^2.14.4"
