@@ -1,6 +1,7 @@
 # ![NullTek Documentation](https://raw.githubusercontent.com/CreatingNull/NullTek-Assets/main/img/uos/UOSLogoSmall.png) UOS Hardware
 
-[![License](https://img.shields.io/:license-mit-blue.svg?style=flat-square)](LICENSE.md)
+[![License](https://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/CreatingNull/UOS-Hardware/main.svg)](https://results.pre-commit.ci/latest/github/CreatingNull/UOS-Hardware/main)
 
 This repository contains a hardware abstraction layer for communicating with microcontrollers running UOS compliant firmware.
 
