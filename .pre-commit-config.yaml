@@ -48,7 +48,7 @@ repos:
         require_serial: true
 
 -   repo: https://github.com/PyCQA/pylint
-    rev: v2.14.4
+    rev: v2.14.5
     hooks:
     # Pylint is also run from within pre-commit for CI purposes.
     -   id: pylint
