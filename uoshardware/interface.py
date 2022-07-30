@@ -2,7 +2,7 @@
 from logging import getLogger as Log
 from typing import Union
 
-from uoshardware import SUPER_VOLATILE, UOSCommunicationError, UOSUnsupportedError
+from uoshardware import Level, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import ComResult, Device, InstructionArguments
 from uoshardware.devices import Interface, get_device_definition
 from uoshardware.serial import Serial
@@ -68,94 +68,86 @@ class UOSDevice:
             self.open()
         Log(__name__).debug("Created device %s", self.__device_interface.__repr__())
 
-    def set_gpio_output(
-        self, pin: int, level: int, volatility: int = SUPER_VOLATILE
-    ) -> ComResult:
+    def set_gpio_output(self, pin: int, level: int, volatility: Level) -> ComResult:
         """Sets a pin to digital output mode and sets a level on that pin.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
-        :param volatility: How volatile should the command be, use constants from HardwareCOM.
+        :param volatility: How volatile should the command be, use constants from uoshardware.
         :return: ComResult object.
         """
         return self.__execute_instruction(
             UOSDevice.set_gpio_output.__name__,
-            volatility,
             InstructionArguments(
                 device_function_lut=self.device.functions_enabled,
                 payload=(pin, 0, level),
                 check_pin=pin,
+                volatility=volatility,
             ),
         )
 
-    def get_gpio_input(
-        self, pin: int, level: int, volatility: int = SUPER_VOLATILE
-    ) -> ComResult:
+    def get_gpio_input(self, pin: int, level: int, volatility: Level) -> ComResult:
         """Reads a GPIO pins level from device and returns the value.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state.
-        :param volatility: How volatile should the command be, use constants from HardwareCOM.
+        :param volatility: How volatile should the command be, use constants from uoshardware.
         :return: ComResult object.
         """
         return self.__execute_instruction(
             UOSDevice.get_gpio_input.__name__,
-            volatility,
             InstructionArguments(
                 device_function_lut=self.device.functions_enabled,
                 payload=(pin, 1, level),
                 expected_rx_packets=2,
                 check_pin=pin,
+                volatility=volatility,
             ),
         )
 
     def get_adc_input(
         self,
         pin: int,
-        volatility: int = SUPER_VOLATILE,
+        volatility: Level,
     ) -> ComResult:
         """Reads the current 10 bit ADC value.
 
         :param pin: The index of the analogue pin to read
-        :param volatility: How volatile should the command be, use constants from HardwareCOM.
+        :param volatility: How volatile should the command be, use constants from uoshardware.
         :return: ComResult object containing the ADC readings.
         """
         return self.__execute_instruction(
             UOSDevice.get_adc_input.__name__,
-            volatility,
             InstructionArguments(
                 device_function_lut=self.device.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
                 check_pin=pin,
+                volatility=volatility,
             ),
         )
 
-    def get_system_info(self, **kwargs) -> ComResult:
+    def get_system_info(self) -> ComResult:
         """Reads the UOS version and device type.
 
-        :param kwargs: Control arguments, accepts volatility.
         :return: ComResult object containing the system information.
         """
         return self.__execute_instruction(
             UOSDevice.get_system_info.__name__,
-            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(
                 device_function_lut=self.device.functions_enabled,
                 expected_rx_packets=2,
             ),
         )
 
-    def get_gpio_config(self, pin: int, **kwargs) -> ComResult:
+    def get_gpio_config(self, pin: int) -> ComResult:
         """Reads the configuration for a digital pin on the device.
 
         :param pin: Defines the pin for config querying.
-        :param kwargs: Control arguments accepts volatility.
         :return: ComResult object containing the system information.
         """
         return self.__execute_instruction(
             UOSDevice.get_gpio_config.__name__,
-            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(
                 device_function_lut=self.device.functions_enabled,
                 payload=tuple([pin]),
@@ -164,19 +156,17 @@ class UOSDevice:
             ),
         )
 
-    def reset_all_io(self, **kwargs) -> ComResult:
+    def reset_all_io(self) -> ComResult:
         """Executes the reset IO at the defined volatility level."""
         return self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
-            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(device_function_lut=self.device.functions_enabled),
         )
 
-    def hard_reset(self, **kwargs) -> ComResult:
+    def hard_reset(self) -> ComResult:
         """Hard reset functionality for the UOS Device."""
         return self.__execute_instruction(
             UOSDevice.hard_reset.__name__,
-            kwargs["volatility"] if "volatility" in kwargs else SUPER_VOLATILE,
             InstructionArguments(device_function_lut=self.device.functions_enabled),
         )
 
@@ -203,42 +193,42 @@ class UOSDevice:
     def __execute_instruction(
         self,
         function_name: str,
-        volatility,
         instruction_data: InstructionArguments,
         retry: bool = True,
     ) -> ComResult:
         """Common functionality for execution of all UOS instructions.
 
         :param function_name: The name of the function in the OOL.
-        :param volatility: How volatile should the command be, use constants in HardwareCOM.
         :param instruction_data: device_functions from the LUT, payload ect.
         :param retry: Allows the instruction to retry execution when fails.
         :return: ComResult object
         :raises: UOSUnsupportedError if function is not possible on the loaded device.
         """
-        if (
-            function_name not in self.device.functions_enabled
-            or volatility not in self.device.functions_enabled[function_name]
-            or (
-                instruction_data.check_pin is not None
-                and instruction_data.check_pin
-                not in self.device.get_compatible_pins(function_name)
-            )
+        if function_name not in self.device.functions_enabled or (
+            instruction_data.check_pin is not None
+            and instruction_data.check_pin
+            not in self.device.get_compatible_pins(function_name)
         ):
             Log(__name__).debug(
                 "Known functions %s", str(self.device.functions_enabled.keys())
             )
             raise UOSUnsupportedError(
-                f"{function_name}({volatility}) has not been implemented for {self.identity}"
+                f"{function_name}({instruction_data.volatility.name}) "
+                f"has not been implemented for {self.identity}"
             )
         rx_response = ComResult(False)
         if self.is_lazy():  # Lazy loaded
             self.open()
         if (
-            instruction_data.device_function_lut[function_name][volatility] >= 0
+            instruction_data.device_function_lut[function_name][
+                instruction_data.volatility.value
+            ]
+            >= 0
         ):  # a normal instruction
             tx_response = self.__device_interface.execute_instruction(
-                instruction_data.device_function_lut[function_name][volatility],
+                instruction_data.device_function_lut[function_name][
+                    instruction_data.volatility.value
+                ],
                 instruction_data.payload,
             )
             if tx_response.status:
@@ -271,9 +261,7 @@ class UOSDevice:
         if (
             not rx_response.status and retry
         ):  # allow one retry per instruction due to DTR resets
-            return self.__execute_instruction(
-                function_name, volatility, instruction_data, False
-            )
+            return self.__execute_instruction(function_name, instruction_data, False)
         return rx_response
 
     def is_lazy(self) -> bool:

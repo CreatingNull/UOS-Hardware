@@ -1,7 +1,9 @@
 """Unit tests for the hardware interface module."""
+from inspect import signature
+
 import pytest
 
-from uoshardware import UOSCommunicationError, UOSUnsupportedError
+from uoshardware import Level, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import UOS_SCHEMA, UOSInterface
 from uoshardware.devices import Interface, enumerate_system_devices
 from uoshardware.interface import UOSDevice
@@ -47,39 +49,40 @@ class TestHardwareCOMInterface:
     @pytest.mark.parametrize("function_name", UOS_SCHEMA.keys())
     def test_device_function(uos_device, function_name):
         """Checks the UOS functions respond correctly."""
-        for volatility in [0, 1, 2]:
+        for volatility in Level:
+            if volatility not in uos_device.device.functions_enabled[function_name]:
+                continue  # Ignore unsupported volatilities for device
             pins = uos_device.device.get_compatible_pins(function_name)
             if pins is None or len(pins) == 0:
                 pins = [0]  # insert a dummy pin for non-pinned functions.
             for pin in pins:
-                if volatility in uos_device.device.functions_enabled[function_name]:
-                    result = getattr(uos_device, function_name)(
-                        pin=pin, level=1, volatility=volatility
+                function = getattr(uos_device, function_name)
+                call_arguments = {}
+                if "pin" in signature(function).parameters.keys():
+                    call_arguments["pin"] = pin
+                if "level" in signature(function).parameters.keys():
+                    call_arguments["level"] = 0
+                if "volatility" in signature(function).parameters.keys():
+                    call_arguments["volatility"] = volatility
+                result = function(**call_arguments)
+                assert result.status
+                assert len(result.rx_packets) == len(
+                    UOS_SCHEMA[function_name].rx_packets_expected
+                )
+                for i, rx_packet in enumerate(result.rx_packets):
+                    assert (  # packet length validation
+                        len(rx_packet)
+                        == 6 + UOS_SCHEMA[function_name].rx_packets_expected[i]
                     )
-                    assert result.status
-                    assert len(result.rx_packets) == len(
-                        UOS_SCHEMA[function_name].rx_packets_expected
+                    assert (  # payload length validation
+                        rx_packet[3] == UOS_SCHEMA[function_name].rx_packets_expected[i]
                     )
-                    for i, rx_packet in enumerate(result.rx_packets):
-                        assert (  # packet length validation
-                            len(rx_packet)
-                            == 6 + UOS_SCHEMA[function_name].rx_packets_expected[i]
-                        )
-                        assert (  # payload length validation
-                            rx_packet[3]
-                            == UOS_SCHEMA[function_name].rx_packets_expected[i]
-                        )
-                else:  # not implemented check error raised correctly
-                    with pytest.raises(UOSUnsupportedError):
-                        getattr(uos_device, function_name)(
-                            pin=pin, level=1, volatility=volatility
-                        )
 
     @staticmethod
     def test_invalid_pin(uos_device):
         """Checks a pin based instruction with an invalid pin throws error."""
         with pytest.raises(UOSUnsupportedError):
-            uos_device.set_gpio_output(-1, 1)
+            uos_device.set_gpio_output(-1, 1, volatility=Level.SUPER_VOLATILE)
 
     @staticmethod
     def test_close_error(uos_errored_device):

@@ -1,7 +1,7 @@
 """Package is used as a simulated UOSInterface for test purposes."""
 from typing import Tuple
 
-from uoshardware.abstractions import UOS_SCHEMA, ComResult, UOSFunction, UOSInterface
+from uoshardware.abstractions import UOS_SCHEMA, ComResult, UOSInterface
 
 
 class Stub(UOSInterface):
@@ -14,10 +14,15 @@ class Stub(UOSInterface):
         self.errored = errored
         self.connection = connection
 
-    def execute_instruction(self, address: int, payload: Tuple[int, ...]) -> ComResult:
+    def execute_instruction(
+        self,
+        address: int,
+        # Dead code false positive as this is over-riding an interface.
+        payload: Tuple[int, ...],  # dead: disable
+    ) -> ComResult:
         """Simulates executing an instruction on a UOS endpoint.
 
-        Should check weather the last instruction was valid and store
+        Should check whether the last instruction was valid and store
         it. This will allow read response to provide more realistic
         responses.
         """
@@ -25,9 +30,7 @@ class Stub(UOSInterface):
             return ComResult(status=False, exception="Port must be opened first.")
         for _, function in UOS_SCHEMA.items():
             for vol in function.address_lut:
-                if function.address_lut[vol] == address and self.__check_required_args(
-                    payload, function
-                ):
+                if function.address_lut[vol] == address:
                     if function.ack:
                         self.__packet_buffer.append(
                             self.get_npc_packet(0, address, tuple([0]))
@@ -82,19 +85,3 @@ class Stub(UOSInterface):
     def enumerate_devices() -> []:
         """Returns a list of test stubs implemented in the interface."""
         return [Stub("STUB")]  # The test stub is always available
-
-    @staticmethod
-    def __check_required_args(payload: Tuple[int, ...], function: UOSFunction) -> bool:
-        """Checks formatted payload against a UOS schema payload definition.
-
-        :param payload: Formatted payload tuple of ints.
-        :param function: UOSFunction schema definition.
-        :return: Boolean for if there is a match.
-        """
-        if function.required_arguments is not None and len(
-            function.required_arguments
-        ) == len(payload):
-            for i, argument in enumerate(function.required_arguments):
-                if argument is not None and argument != payload[i]:
-                    return False
-        return True

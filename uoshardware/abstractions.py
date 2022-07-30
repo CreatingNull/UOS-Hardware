@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Dict, List, Tuple
 
-from uoshardware import UOSUnsupportedError
+from uoshardware import Level, UOSUnsupportedError
 
 
 @dataclass
@@ -14,7 +14,6 @@ class UOSFunction:
     address_lut: dict
     ack: bool
     rx_packets_expected: list = field(default_factory=list)
-    required_arguments: list = None
     pin_requirements: list = None
 
 
@@ -22,14 +21,12 @@ UOS_SCHEMA = {
     "set_gpio_output": UOSFunction(
         address_lut={0: 64},
         ack=True,
-        required_arguments=[None, 0, None],  # pin index, io type, level.
         pin_requirements=["gpio_out"],
     ),
     "get_gpio_input": UOSFunction(
         address_lut={0: 64},
         ack=True,
         rx_packets_expected=[1],
-        required_arguments=[None, 1, None],  # pin index, io type, level.
         pin_requirements=["gpio_in"],
     ),
     "get_adc_input": UOSFunction(
@@ -71,6 +68,7 @@ class InstructionArguments:
     payload: tuple = ()
     expected_rx_packets: int = 1
     check_pin: int = None
+    volatility: Level = Level.SUPER_VOLATILE
 
 
 class UOSInterface(metaclass=ABCMeta):

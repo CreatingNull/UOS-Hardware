@@ -1,11 +1,17 @@
 """The high level interface for communicating with UOS devices."""
+from enum import Enum
 from logging import FileHandler, Formatter, getLogger
 from pathlib import Path
 
-# Dead code false positive as these are user facing convenience constants.
-SUPER_VOLATILE = 0
-VOLATILE = 1  # dead: disable
-NON_VOLATILE = 2  # dead: disable
+
+# Dead code false positive as this enum if for client usage.
+class Level(Enum):
+    """Enum object defining volatility levels that can be used in UOS
+    instructions."""
+
+    SUPER_VOLATILE = 0
+    VOLATILE = 1  # dead: disable
+    NON_VOLATILE = 2  # dead: disable
 
 
 # Dead code false positive as interface intended to be used by client.
