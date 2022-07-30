@@ -1,0 +1,53 @@
+
+name: Tests
+
+on:
+  - push
+  - pull_request
+
+jobs:
+
+  run-test:
+    name: ${{ matrix.python-version }}-${{ matrix.build-type }}-${{ matrix.architecture }}-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "ubuntu-latest"
+          - "windows-latest"
+        python-version:
+          - "3.9"
+          - "3.10"
+        architecture:
+          - x64
+          - x86
+
+        exclude:
+          # linux does not have x86 python.
+          - os: "ubuntu-latest"
+            architecture: x86
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up python
+        uses: actions/setup-python@v4.1.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.architecture }}
+
+      - name: Configure Cache
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Run tests
+        run: python -m pytest tests/
