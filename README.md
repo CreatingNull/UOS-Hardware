@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/CreatingNull/UOS-Hardware/main.svg)](https://results.pre-commit.ci/latest/github/CreatingNull/UOS-Hardware/main)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/CreatingNull/uos-hardware/Tests?label=tests&logo=github)](https://github.com/CreatingNull/UOS-Hardware/actions/workflows/run-tests.yaml)
 
 This repository contains a hardware abstraction layer for communicating with microcontrollers running UOS compliant firmware.
 
