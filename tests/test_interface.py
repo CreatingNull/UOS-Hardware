@@ -3,7 +3,7 @@ from inspect import signature
 
 import pytest
 
-from uoshardware import Level, UOSCommunicationError, UOSUnsupportedError
+from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import UOS_SCHEMA, UOSInterface
 from uoshardware.devices import Interface, enumerate_system_devices
 from uoshardware.interface import UOSDevice
@@ -49,7 +49,7 @@ class TestHardwareCOMInterface:
     @pytest.mark.parametrize("function_name", UOS_SCHEMA.keys())
     def test_device_function(uos_device, function_name):
         """Checks the UOS functions respond correctly."""
-        for volatility in Level:
+        for volatility in Persistence:
             if volatility not in uos_device.device.functions_enabled[function_name]:
                 continue  # Ignore unsupported volatilities for device
             pins = uos_device.device.get_compatible_pins(function_name)
@@ -82,7 +82,7 @@ class TestHardwareCOMInterface:
     def test_invalid_pin(uos_device):
         """Checks a pin based instruction with an invalid pin throws error."""
         with pytest.raises(UOSUnsupportedError):
-            uos_device.set_gpio_output(-1, 1, volatility=Level.SUPER_VOLATILE)
+            uos_device.set_gpio_output(-1, 1, volatility=Persistence.NONE)
 
     @staticmethod
     def test_close_error(uos_errored_device):

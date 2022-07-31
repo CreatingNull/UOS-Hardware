@@ -3,15 +3,22 @@ from enum import Enum
 from logging import FileHandler, Formatter, getLogger
 from pathlib import Path
 
+__author__ = "Steve Richardson (Creating Null)"
+__copywright__ = f"2022, {__author__}"
+# Semantic Versioning, MAJOR.MINOR.PATCH[-'pre-release-type'.'num']
+__version__ = "0.0.0-alpha.1"
+# Dead code false positive as this constant is for use outside primary project.
+PROJECT = "UOS Hardware"  # dead: disable
+
 
 # Dead code false positive as this enum if for client usage.
-class Level(Enum):
+class Persistence(Enum):
     """Enum object defining volatility levels that can be used in UOS
     instructions."""
 
-    SUPER_VOLATILE = 0
-    VOLATILE = 1  # dead: disable
-    NON_VOLATILE = 2  # dead: disable
+    NONE = 0
+    RAM = 1
+    EEPROM = 2  # dead: disable
 
 
 # Dead code false positive as interface intended to be used by client.

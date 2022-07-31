@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Dict, List, Tuple
 
-from uoshardware import Level, UOSUnsupportedError
+from uoshardware import Persistence, UOSUnsupportedError
 
 
 @dataclass
@@ -68,7 +68,7 @@ class InstructionArguments:
     payload: tuple = ()
     expected_rx_packets: int = 1
     check_pin: int = None
-    volatility: Level = Level.SUPER_VOLATILE
+    volatility: Persistence = Persistence.RAM
 
 
 class UOSInterface(metaclass=ABCMeta):

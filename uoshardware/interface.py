@@ -2,7 +2,7 @@
 from logging import getLogger as Log
 from typing import Union
 
-from uoshardware import Level, UOSCommunicationError, UOSUnsupportedError
+from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import ComResult, Device, InstructionArguments
 from uoshardware.devices import Interface, get_device_definition
 from uoshardware.serial import Serial
@@ -68,7 +68,9 @@ class UOSDevice:
             self.open()
         Log(__name__).debug("Created device %s", self.__device_interface.__repr__())
 
-    def set_gpio_output(self, pin: int, level: int, volatility: Level) -> ComResult:
+    def set_gpio_output(
+        self, pin: int, level: int, volatility: Persistence = Persistence.NONE
+    ) -> ComResult:
         """Sets a pin to digital output mode and sets a level on that pin.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
@@ -86,7 +88,9 @@ class UOSDevice:
             ),
         )
 
-    def get_gpio_input(self, pin: int, level: int, volatility: Level) -> ComResult:
+    def get_gpio_input(
+        self, pin: int, level: int, volatility: Persistence = Persistence.NONE
+    ) -> ComResult:
         """Reads a GPIO pins level from device and returns the value.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
@@ -108,7 +112,7 @@ class UOSDevice:
     def get_adc_input(
         self,
         pin: int,
-        volatility: Level,
+        volatility: Persistence = Persistence.NONE,
     ) -> ComResult:
         """Reads the current 10 bit ADC value.
 
