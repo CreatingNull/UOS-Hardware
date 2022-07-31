@@ -2,14 +2,14 @@
 name: Tests
 
 on:
-  - push:
-      paths-ignore:
-        - '**.md'  # Ignore documentation for tests
-        - '.pre-commit-config.yaml'  # Stop pre-commit CI triggering tests.
-  - pull_request:
-      paths-ignore:
-        - '**.md'
-        - '.pre-commit-config.yaml'
+  push:
+    paths-ignore:
+      - '**.md'  # Ignore documentation for tests
+      - '.pre-commit-config.yaml'  # Stop pre-commit CI triggering tests.
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - '.pre-commit-config.yaml'
 
 jobs:
 
