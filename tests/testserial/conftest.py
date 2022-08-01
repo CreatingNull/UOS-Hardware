@@ -1,5 +1,4 @@
-"""Module used for argument / test initialisation of low level serial
-driver."""
+"""Module used for fixture initialisation of low level serial driver."""
 import pytest
 
 

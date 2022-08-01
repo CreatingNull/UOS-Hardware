@@ -88,3 +88,9 @@ repos:
             "--ignore-directives=autoclass"
         ]
         additional_dependencies: ["rstcheck[sphinx]==v6.0.0"]
+
+-   repo: https://github.com/PyCQA/pydocstyle
+    # Waiting for a 3.10 release on pypi
+    rev: "a6fe4222012e990042c86cdaaa904a8d059752ee"
+    hooks:
+    -   id: pydocstyle

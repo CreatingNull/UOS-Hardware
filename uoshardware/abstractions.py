@@ -81,7 +81,7 @@ class UOSInterface(metaclass=ABCMeta):
     ) -> ComResult:
         """Abstract method for executing instructions on UOSInterfaces.
 
-        :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
+        :param address: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the uint8 parameters of the UOS instruction.
         :returns: ComResult object.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
@@ -94,8 +94,7 @@ class UOSInterface(metaclass=ABCMeta):
     def read_response(
         self, expect_packets: int, timeout_s: float  # dead: disable
     ) -> ComResult:
-        """Abstract method for reading ACK and Data packets from a
-        UOSInterface.
+        """Read ACK and Data packets from a UOSInterface.
 
         :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
@@ -141,7 +140,7 @@ class UOSInterface(metaclass=ABCMeta):
     @staticmethod
     @abstractmethod
     def enumerate_devices() -> []:
-        """Static method that should be functional if possible.
+        """Return a list of UOSDevices visible to the driver.
 
         :return: A list of possible UOSInterfaces on the server.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
@@ -153,11 +152,11 @@ class UOSInterface(metaclass=ABCMeta):
     @staticmethod
     @lru_cache(maxsize=100)
     def get_npc_packet(to_addr: int, from_addr: int, payload: Tuple[int, ...]) -> bytes:
-        """Static method to generate a standardised NPC packet.
+        """Generate a standardised NPC binary packet.
 
-        :param to_addr: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
-        :param from_addr: An 8 bit unsigned integer of the host system, usually 0.
-        :param payload: A tuple containing the unsigned 8 bit integers of the command.
+        :param to_addr: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.
+        :param from_addr: An 8-bit unsigned integer of the host system, usually 0.
+        :param payload: A tuple containing the unsigned 8-bit integers of the command.
         :return: NPC packet as a bytes object. No bytes returned on fault.
         """
         if (
@@ -174,10 +173,10 @@ class UOSInterface(metaclass=ABCMeta):
 
     @staticmethod
     def get_npc_checksum(packet_data: list[int]) -> int:
-        """Static method to generate a NPC LRC checksum.
+        """Generate a NPC LRC checksum.
 
         :param packet_data: List of the uint8 values from an NPC packet.
-        :return: NPC checksum as a 8 bit integer.
+        :return: NPC checksum as a 8-bit integer.
         """
         lrc = 0
         for byte in packet_data:
@@ -219,7 +218,7 @@ class Device:
     aux_params: dict = field(default_factory=dict)
 
     def get_compatible_pins(self, function_name: str) -> {}:
-        """Returns a dict of pin objects that are suitable for a function.
+        """Return a dict of pin objects that are suitable for a function.
 
         :param function_name: the string name of the UOS Schema function.
         :return: Dict of pin objects, keyed on pin index.

@@ -1,3 +1,11 @@
+"""Configuration file for the Sphinx documentation builder.
+
+For the full list of built-in configuration values, see the documentation:
+https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+-- Project information -----------------------------------------------------
+https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+"""
 import os
 import sys
 from re import match
@@ -5,14 +13,6 @@ from re import match
 sys.path.insert(0, os.path.abspath("../"))
 
 from uoshardware import PROJECT, __author__, __copywright__, __version__  # noqa: E402
-
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = PROJECT
 # Copyright name shadowed by sphinx design.

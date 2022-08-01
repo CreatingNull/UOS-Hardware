@@ -71,7 +71,7 @@ class UOSDevice:
     def set_gpio_output(
         self, pin: int, level: int, volatility: Persistence = Persistence.NONE
     ) -> ComResult:
-        """Sets a pin to digital output mode and sets a level on that pin.
+        """Set a pin to digital output mode and sets a level on that pin.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: The output level, 0 - low, 1 - High.
@@ -91,7 +91,7 @@ class UOSDevice:
     def get_gpio_input(
         self, pin: int, level: int, volatility: Persistence = Persistence.NONE
     ) -> ComResult:
-        """Reads a GPIO pins level from device and returns the value.
+        """Read a GPIO pins level from device and returns the value.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
         :param level: Not used currently, future will define pull-up state.
@@ -114,7 +114,7 @@ class UOSDevice:
         pin: int,
         volatility: Persistence = Persistence.NONE,
     ) -> ComResult:
-        """Reads the current 10 bit ADC value.
+        """Read the current 10 bit ADC value.
 
         :param pin: The index of the analogue pin to read
         :param volatility: How volatile should the command be, use constants from uoshardware.
@@ -132,7 +132,7 @@ class UOSDevice:
         )
 
     def get_system_info(self) -> ComResult:
-        """Reads the UOS version and device type.
+        """Read the UOS version and device type.
 
         :return: ComResult object containing the system information.
         """
@@ -145,7 +145,7 @@ class UOSDevice:
         )
 
     def get_gpio_config(self, pin: int) -> ComResult:
-        """Reads the configuration for a digital pin on the device.
+        """Read the configuration for a digital pin on the device.
 
         :param pin: Defines the pin for config querying.
         :return: ComResult object containing the system information.
@@ -161,7 +161,7 @@ class UOSDevice:
         )
 
     def reset_all_io(self) -> ComResult:
-        """Executes the reset IO at the defined volatility level."""
+        """Execute the reset IO at the defined volatility level."""
         return self.__execute_instruction(
             UOSDevice.reset_all_io.__name__,
             InstructionArguments(device_function_lut=self.device.functions_enabled),
@@ -175,7 +175,7 @@ class UOSDevice:
         )
 
     def open(self):
-        """Connects to the device, explict calls are normally not required.
+        """Connect to the device, explict calls are normally not required.
 
         :raises: UOSCommunicationError - Problem opening a connection.
         """
@@ -185,7 +185,7 @@ class UOSDevice:
             )
 
     def close(self):
-        """Releases connection, must be called explicitly if loading is eager.
+        """Release connection, must be called explicitly if loading is eager.
 
         :raises: UOSCommunicationError - Problem closing the connection to an active device.
         """
@@ -200,7 +200,7 @@ class UOSDevice:
         instruction_data: InstructionArguments,
         retry: bool = True,
     ) -> ComResult:
-        """Common functionality for execution of all UOS instructions.
+        """Execute a generic UOS function and get the result.
 
         :param function_name: The name of the function in the OOL.
         :param instruction_data: device_functions from the LUT, payload ect.
@@ -269,7 +269,7 @@ class UOSDevice:
         return rx_response
 
     def is_lazy(self) -> bool:
-        """Checks the loading type of the device lazy or eager.
+        """Check the loading type of the device lazy or eager.
 
         :return: Boolean, true is lazy.
         """
@@ -278,7 +278,7 @@ class UOSDevice:
         return False
 
     def __repr__(self):
-        """Over-rides the built in repr with something useful.
+        """Representation of the UOS device.
 
         :return: String containing connection and identity of the device
         """

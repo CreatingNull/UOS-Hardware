@@ -16,8 +16,7 @@ else:
 
 
 class Serial(UOSInterface):
-    """Low level pyserial class that handles reading / writing to the serial
-    port.
+    """Pyserial class that handles reading / writing to ports.
 
     :ivar _device: Holds the pyserial device once opened. None if not opened.
     :ivar _connection: Holds the standard connection string 'Interface'|'OS Connection String.
@@ -32,7 +31,7 @@ class Serial(UOSInterface):
     _kwargs = {}
 
     def __init__(self, connection: str, **kwargs):
-        """Constructor for a NPCSerialPort device.
+        """Create an NPCSerialPort device.
 
         :param connection: OS connection string for the serial port.
         """
@@ -45,7 +44,7 @@ class Serial(UOSInterface):
             Log(__name__).debug("%s located", self._port)
 
     def open(self):
-        """Opens a connection to the the port and creates the device object.
+        """Open a connection to the port and creates the device object.
 
         :return: Success boolean.
         """
@@ -87,7 +86,7 @@ class Serial(UOSInterface):
             return False
 
     def close(self):
-        """Closes the serial connection and clears the device.
+        """Close the serial connection and clear the device.
 
         :return: Success boolean.
         """
@@ -104,9 +103,9 @@ class Serial(UOSInterface):
         return True
 
     def execute_instruction(self, address, payload):
-        """Builds and executes a new packet.
+        """Build and execute a new instruction packet.
 
-        :param address: An 8 bit unsigned integer of the UOS subsystem targeted by the instruction.
+        :param address: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.
         :param payload: A tuple containing the uint8 parameters of the UOS instruction.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
@@ -125,7 +124,7 @@ class Serial(UOSInterface):
         return ComResult(num_bytes == len(packet))
 
     def read_response(self, expect_packets: int, timeout_s: float):
-        """Reads ACK and response packets from the serial device.
+        """Read ACK and response packets from the serial device.
 
         :param expect_packets: How many packets including ACK to expect.
         :param timeout_s: The maximum time this function will wait for data.
@@ -172,7 +171,7 @@ class Serial(UOSInterface):
             return response_object
 
     def hard_reset(self):
-        """Manually drives the DTR line low to reset the device.
+        """Manually drive the DTR line low to reset the device.
 
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
@@ -185,7 +184,7 @@ class Serial(UOSInterface):
         return ComResult(True)
 
     def check_open(self) -> bool:
-        """Tests if the connection is open by validating an open device.
+        """Test if the connection is open.
 
         :return: Boolean, true if open.
         """
@@ -194,7 +193,7 @@ class Serial(UOSInterface):
         return True
 
     def __repr__(self):
-        """Over-rides the built in repr with something useful.
+        """Representation of object.
 
         :return: String containing connection, port and device.
         """
@@ -241,7 +240,7 @@ class Serial(UOSInterface):
 
     @staticmethod
     def check_port_exists(device: str):
-        """Checks if serial device is available on system.
+        """Check if serial device is available on system.
 
         :param device: OS connection string for the serial port.
         :return: The port device class if it exists, else None.

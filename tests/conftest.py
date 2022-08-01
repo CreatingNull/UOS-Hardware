@@ -22,7 +22,7 @@ DEVICES = {
 
 @pytest.fixture(scope="session", params=list(DEVICES.keys()))
 def uos_device(request):
-    """Creates a fixture for testing through the abstraction layer."""
+    """Create a fixture for testing through the abstraction layer."""
     device = UOSDevice(
         DEVICES[request.param]["identity"],
         DEVICES[request.param]["address"],
@@ -35,7 +35,7 @@ def uos_device(request):
 
 @pytest.fixture(scope="session", params=list(DEVICES.keys()))
 def uos_errored_device(request):
-    """Creates a fixture for testing through the abstraction layer."""
+    """Create a fixture for testing through the abstraction layer."""
     return UOSDevice(
         DEVICES[request.param]["identity"],
         DEVICES[request.param]["address"],
@@ -47,10 +47,10 @@ def uos_errored_device(request):
 
 @pytest.fixture(scope="session", params=list(DEVICES.keys()))
 def uos_identities(request):
-    """Creates the device definition for testing interface config."""
+    """Create the device definition for testing interface config."""
     return DEVICES[request.param]
 
 
 def pytest_addoption(parser):
-    """Adds USB serial connection optional CLI argument."""
+    """Add USB serial connection optional CLI argument."""
     parser.addoption("--serial", action="store", default=None)

@@ -13,8 +13,7 @@ PROJECT = "UOS Hardware"  # dead: disable
 
 # Dead code false positive as this enum if for client usage.
 class Persistence(Enum):
-    """Enum object defining volatility levels that can be used in UOS
-    instructions."""
+    """Volatility levels that can be used in UOS instructions."""
 
     NONE = 0
     RAM = 1

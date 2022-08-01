@@ -16,7 +16,7 @@ class Interface(Enum):
 
 # This is an interface for client implementations dead code false positive.
 def enumerate_system_devices(interface_filter: Interface = None) -> []:  # dead: disable
-    """Iterates through all interfaces and locates available devices.
+    """Iterate through all interfaces and locates available devices.
 
     :param interface_filter: Interface enum to limit the search to a single interface type.
     :return: A list of uosinterface objects.
@@ -33,7 +33,7 @@ def enumerate_system_devices(interface_filter: Interface = None) -> []:  # dead:
 
 
 def get_device_definition(identity: str) -> Device:
-    """Looks up the system config dictionary for the defined device mappings.
+    """Look up the system config dictionary for the defined device mappings.
 
     :param identity: String containing the lookup key of the device in the dictionary.
     :return: Device Object or None if not found
