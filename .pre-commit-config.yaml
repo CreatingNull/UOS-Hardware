@@ -22,20 +22,31 @@ repos:
     -   id: black
 
 -   repo: https://github.com/PyCQA/isort
+    # Note - on black update blacken-docs pin should also be updated.
     rev: 5.10.1
     hooks:
     -   id: isort
-        args: ["--profile=black"]
+        args: ['--profile=black']
 
 -   repo: https://github.com/myint/docformatter
     rev: v1.4
     hooks:
     -   id: docformatter
 
+-   repo: https://github.com/asottile/blacken-docs
+    rev: v1.12.1
+    hooks:
+    -   id: blacken-docs
+        # Note - on black update blacken-docs pin should also be updated.
+        additional_dependencies: ['black==22.6.0']
+
 -   repo: https://github.com/asottile/dead
     rev: v1.5.0
     hooks:
     -   id: dead
+        args: [
+            '--exclude=conf.py'  # Ignore the sphinx config as this is used by an external tool.
+        ]
 
 -   repo: local
     hooks:
@@ -45,6 +56,9 @@ repos:
         entry: pylint
         language: system
         types: [ python ]
+        args: [
+            '--ignore=conf.py',  # Ignore the sphinx config as this is used by an external tool.
+        ]
         require_serial: true
 
 -   repo: https://github.com/PyCQA/pylint
@@ -52,12 +66,25 @@ repos:
     hooks:
     # Pylint is also run from within pre-commit for CI purposes.
     -   id: pylint
-        # Ignore imports when not running in a local env.
-        args: ["--disable=E0401"]
+        args: [
+            '--disable=E0401',  # Ignore imports when not running in a local env.
+            '--ignore=conf.py',  # Ignore the sphinx config as this is used by an external tool.
+        ]
 
 -   repo: https://github.com/PyCQA/bandit
     rev: 1.7.4
     hooks:
     -   id: bandit
         # Assert is used exclusively in pytest.
-        args: ["--skip=B101"]
+        args: ['--skip=B101']
+
+-   repo: https://github.com/rstcheck/rstcheck
+    # Make sure to also update the additional dependency pin
+    rev: v6.0.0
+    hooks:
+    -   id: rstcheck
+        args: [
+            # Sphinx autodoc extension directives are not supported.
+            "--ignore-directives=autoclass"
+        ]
+        additional_dependencies: ["rstcheck[sphinx]==v6.0.0"]
