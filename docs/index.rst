@@ -33,7 +33,7 @@ This is the `hello world` usage for turning on the arduino on-board pin 13 LED.
 
 .. code-block:: python
 
-    from uoshardware.interface import UOSDevice
+    from uoshardware.api import UOSDevice
     from uoshardware.devices import ARDUINO_NANO_3
 
     device = UOSDevice(identity=ARDUINO_NANO_3, address="/dev/ttyUSB0")
@@ -41,7 +41,7 @@ This is the `hello world` usage for turning on the arduino on-board pin 13 LED.
 
 Note: that individual pins and functions must be enabled and supported by the `Device`.
 
-.. autoclass:: uoshardware.interface.UOSDevice
+.. autoclass:: uoshardware.api.UOSDevice
    :members:
 
 Hardware Interfaces
