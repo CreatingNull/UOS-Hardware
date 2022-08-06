@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "A hardware abstraction layer for microcontrollers running UOS compliant firmware."
 authors = ["nulltek <steve.public@nulltek.xyz>"]
 license = "MIT"
+packages = [
+    { include = "uoshardware" }
+]
 
 [tool.poetry.dependencies]
 # Note if changing project python versions considerations should be made for github workflow version.
