@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "uos-hardware"
-version = "0.1.0"
+version = "0.1.1"
 description = "A hardware abstraction layer for microcontrollers running UOS compliant firmware."
 authors = ["nulltek <steve.public@nulltek.xyz>"]
 license = "MIT"
-readme = "README.md
+readme = "README.md"
 homepage = "https://github.com/CreatingNull/UOS-Hardware"
 documentation = "https://uos-hardware.nulltek.xyz"
 packages = [

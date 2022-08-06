@@ -1,7 +1,7 @@
 Version 0.1.1
 -------------
 
-:Date: TBC
+:Date: 7-August-2022
 
 * Including additional documentation in published build.
 
