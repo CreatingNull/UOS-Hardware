@@ -4,9 +4,10 @@ from typing import Union
 
 from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import ComResult, Device, InstructionArguments
-from uoshardware.devices import Interface, get_device_definition
-from uoshardware.serial import Serial
-from uoshardware.stub import Stub
+from uoshardware.devices import get_device_definition
+from uoshardware.interface import Interface
+from uoshardware.interface.serial import Serial
+from uoshardware.interface.stub import Stub
 
 
 class UOSDevice:

@@ -3,7 +3,7 @@ import pytest
 
 from uoshardware import UOSUnsupportedError
 from uoshardware.abstractions import Pin
-from uoshardware.interface import UOSDevice
+from uoshardware.api import UOSDevice
 
 
 def test_get_compatible_pins(uos_device: UOSDevice):

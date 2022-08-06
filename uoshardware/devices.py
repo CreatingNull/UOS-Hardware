@@ -1,17 +1,6 @@
 """Module defining supported hardware definitions."""
-import sys
-from enum import Enum
-
 from uoshardware.abstractions import UOS_SCHEMA, Device, Pin
-from uoshardware.serial import Serial
-from uoshardware.stub import Stub
-
-
-class Interface(Enum):
-    """Enumerates interfaces and their reference package names."""
-
-    STUB = Stub.__name__
-    SERIAL = Serial.__name__
+from uoshardware.interface import Interface
 
 
 # This is an interface for client implementations dead code false positive.
@@ -24,9 +13,7 @@ def enumerate_system_devices(interface_filter: Interface = None) -> []:  # dead:
     system_devices = []
     for interface in Interface:  # enum object
         if not interface_filter or interface_filter == interface:
-            system_devices.extend(
-                getattr(sys.modules[__name__], interface.value).enumerate_devices()
-            )
+            system_devices.extend(interface.value.enumerate_devices())
         if interface_filter is not None:
             break
     return system_devices
@@ -52,7 +39,7 @@ def get_device_definition(identity: str) -> Device:
 
 ARDUINO_NANO_3 = Device(
     name="Arduino Nano 3",
-    interfaces=[Interface.SERIAL, Interface.STUB],
+    interfaces=[Interface.STUB, Interface.SERIAL],
     functions_enabled={
         "set_gpio_output": {0: True},
         "get_gpio_input": {0: True},

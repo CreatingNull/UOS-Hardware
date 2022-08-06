@@ -3,7 +3,7 @@ from time import sleep
 
 import pytest
 
-from uoshardware.serial import Serial
+from uoshardware.interface.serial import Serial
 
 
 class TestSerialPort:

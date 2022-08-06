@@ -5,9 +5,10 @@ import pytest
 
 from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import UOS_SCHEMA, UOSInterface
-from uoshardware.devices import Interface, enumerate_system_devices
-from uoshardware.interface import UOSDevice
-from uoshardware.stub import Stub
+from uoshardware.api import UOSDevice
+from uoshardware.devices import enumerate_system_devices
+from uoshardware.interface import Interface
+from uoshardware.interface.stub import Stub
 
 
 class TestHardwareCOMInterface:
