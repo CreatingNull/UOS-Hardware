@@ -1,6 +1,7 @@
 # ![NullTek Documentation](https://raw.githubusercontent.com/CreatingNull/NullTek-Assets/main/img/uos/UOSLogoSmall.png) UOS Hardware
 
 [![License](https://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
+[![Read the Docs](https://img.shields.io/readthedocs/uos-hardware)](https://uos-hardware.nulltek.xyz)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/CreatingNull/UOS-Hardware/main.svg)](https://results.pre-commit.ci/latest/github/CreatingNull/UOS-Hardware/main)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/CreatingNull/uos-hardware/Tests?label=tests&logo=github)](https://github.com/CreatingNull/UOS-Hardware/actions/workflows/run-tests.yaml)
 
