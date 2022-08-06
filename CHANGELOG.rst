@@ -1,3 +1,10 @@
+Version 0.1.1
+-------------
+
+:Date: TBC
+
+* Including additional documentation in published build.
+
 Version 0.1.0
 -------------
 
