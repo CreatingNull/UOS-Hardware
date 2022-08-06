@@ -87,7 +87,7 @@ repos:
             # Sphinx autodoc extension directives are not supported.
             "--ignore-directives=autoclass"
         ]
-        additional_dependencies: ["rstcheck[sphinx]==v6.0.0"]
+        additional_dependencies: ["rstcheck[sphinx]==6.0.0"]
 
 -   repo: https://github.com/PyCQA/pydocstyle
     # Waiting for a 3.10 release on pypi
