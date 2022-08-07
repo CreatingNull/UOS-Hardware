@@ -11,3 +11,15 @@ sphinx:
 
 # Optionally build your docs in additional formats such as PDF
 formats: all
+
+# Set build OS and python version
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.10"
+
+# Install project dependencies so autodoc can generate properly.
+python:
+  install:
+    - method: pip
+      path: .
