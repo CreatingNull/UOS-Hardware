@@ -40,5 +40,5 @@ Note: that individual pins and functions must be enabled and supported by the `D
 Hardware Interfaces
 -------------------
 
-*	Stub
-*	USB Serial
+* Stub
+* USB Serial
