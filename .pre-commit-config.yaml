@@ -17,7 +17,7 @@ repos:
     -   id: check-ast
 
 -   repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.8.0
     hooks:
     -   id: black
 
@@ -29,7 +29,7 @@ repos:
         args: ['--profile=black']
 
 -   repo: https://github.com/myint/docformatter
-    rev: v1.4
+    rev: v1.5.0
     hooks:
     -   id: docformatter
 
@@ -62,7 +62,7 @@ repos:
         require_serial: true
 
 -   repo: https://github.com/PyCQA/pylint
-    rev: v2.14.5
+    rev: v2.15.2
     hooks:
     # Pylint is also run from within pre-commit for CI purposes.
     -   id: pylint
@@ -86,7 +86,7 @@ repos:
 
 -   repo: https://github.com/PyCQA/pydocstyle
     # Waiting for a 3.10 release on pypi
-    rev: "a6fe4222012e990042c86cdaaa904a8d059752ee"
+    rev: "6.1.1"
     hooks:
     -   id: pydocstyle
 
