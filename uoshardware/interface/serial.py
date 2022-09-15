@@ -102,7 +102,8 @@ class Serial(UOSInterface):
         self._device = None
         return True
 
-    def execute_instruction(self, address, payload):
+    # Kwargs is defined in the abstractmethod definition, false positive.
+    def execute_instruction(self, address, payload, **kwargs):  # dead: disable
         """Build and execute a new instruction packet.
 
         :param address: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.

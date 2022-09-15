@@ -1,7 +1,7 @@
 """Package is used as a simulated UOSInterface for test purposes."""
 from typing import Tuple
 
-from uoshardware.abstractions import UOS_SCHEMA, ComResult, UOSInterface
+from uoshardware.abstractions import ComResult, UOSInterface
 
 
 class Stub(UOSInterface):
@@ -19,6 +19,7 @@ class Stub(UOSInterface):
         address: int,
         # Dead code false positive as this is over-riding an interface.
         payload: Tuple[int, ...],  # dead: disable
+        **kwargs,
     ) -> ComResult:
         """Simulate executing an instruction on a UOS endpoint.
 
@@ -28,20 +29,15 @@ class Stub(UOSInterface):
         """
         if not self.__open:
             return ComResult(status=False, exception="Port must be opened first.")
-        for _, function in UOS_SCHEMA.items():
-            for vol in function.address_lut:
-                if function.address_lut[vol] == address:
-                    if function.ack:
-                        self.__packet_buffer.append(
-                            self.get_npc_packet(0, address, tuple([0]))
-                        )
-                    for rx_packet in function.rx_packets_expected:
-                        self.__packet_buffer.append(
-                            self.get_npc_packet(
-                                0, address, tuple(0 for _ in range(rx_packet))
-                            )
-                        )
-                    return ComResult(True)
+        function = kwargs["function"]
+        if function is not None:
+            if function.ack:
+                self.__packet_buffer.append(self.get_npc_packet(0, address, tuple([0])))
+            for rx_packet in function.rx_packets_expected:
+                self.__packet_buffer.append(
+                    self.get_npc_packet(0, address, tuple(0 for _ in range(rx_packet)))
+                )
+            return ComResult(True)
         return ComResult(False)
 
     # Dead code detection false positive due to abstract interface.

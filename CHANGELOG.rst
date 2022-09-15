@@ -1,3 +1,11 @@
+Version 0.2.0
+-------------
+
+:Date: TBC
+
+* Major refactoring to device handling and top-level UOS schema definitions.
+  This is to improve OOP consistency across the project and reduce reliance on string name lookup.
+
 Version 0.1.1
 -------------
 

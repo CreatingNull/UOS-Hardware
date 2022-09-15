@@ -11,42 +11,65 @@ from uoshardware import Persistence, UOSUnsupportedError
 class UOSFunction:
     """Defines auxiliary information for UOS commands in the schema."""
 
+    name: str
     address_lut: dict
     ack: bool
     rx_packets_expected: list = field(default_factory=list)
     pin_requirements: list = None
 
 
-UOS_SCHEMA = {
-    "set_gpio_output": UOSFunction(
-        address_lut={0: 64},
+@dataclass
+class UOSFunctions:
+    """Class enumerates UOS functions and function requirements."""
+
+    set_gpio_output = UOSFunction(
+        name="set_gpio_output",
+        address_lut={Persistence.NONE: 64},
         ack=True,
         pin_requirements=["gpio_out"],
-    ),
-    "get_gpio_input": UOSFunction(
-        address_lut={0: 64},
+    )
+    get_gpio_input = UOSFunction(
+        name="get_gpio_input",
+        address_lut={Persistence.NONE: 64},
         ack=True,
         rx_packets_expected=[1],
         pin_requirements=["gpio_in"],
-    ),
-    "get_adc_input": UOSFunction(
-        address_lut={0: 85},
+    )
+    get_adc_input = UOSFunction(
+        name="get_adc_input",
+        address_lut={Persistence.NONE: 85},
         ack=True,
         rx_packets_expected=[2],
         pin_requirements=["adc_in"],
-    ),
-    "reset_all_io": UOSFunction(address_lut={0: 68}, ack=True),
-    "hard_reset": UOSFunction(address_lut={0: -1}, ack=False),
-    "get_system_info": UOSFunction(
-        address_lut={0: 250}, ack=True, rx_packets_expected=[6]
-    ),
-    "get_gpio_config": UOSFunction(
-        address_lut={0: 251},
+    )
+    reset_all_io = UOSFunction(
+        name="reset_all_io", address_lut={Persistence.NONE: 68}, ack=True
+    )
+    hard_reset = UOSFunction(
+        name="hard_reset", address_lut={Persistence.NONE: -1}, ack=False
+    )
+    get_system_info = UOSFunction(
+        name="get_system_info",
+        address_lut={Persistence.NONE: 250},
+        ack=True,
+        rx_packets_expected=[6],
+    )
+    get_gpio_config = UOSFunction(
+        name="get_gpio_config",
+        address_lut={Persistence.NONE: 251},
         ack=True,
         rx_packets_expected=[2],
         pin_requirements=[],
-    ),
-}
+    )
+
+    @staticmethod
+    def enumerate_functions() -> []:
+        """Return all the defined UOSFunction objects."""
+        return [
+            getattr(UOSFunctions, member_name)
+            for member_name in dir(UOSFunctions)
+            if isinstance(getattr(UOSFunctions, member_name), UOSFunction)
+        ]
 
 
 @dataclass
@@ -64,11 +87,10 @@ class ComResult:
 class InstructionArguments:
     """Containing the data structure used to generalise UOS arguments."""
 
-    device_function_lut: Dict = field(default_factory=dict)
     payload: tuple = ()
     expected_rx_packets: int = 1
     check_pin: int = None
-    volatility: Persistence = Persistence.RAM
+    volatility: Persistence = Persistence.NONE
 
 
 class UOSInterface(metaclass=ABCMeta):
@@ -77,7 +99,7 @@ class UOSInterface(metaclass=ABCMeta):
     # Dead code suppression used as abstract interfaces are false positives.
     @abstractmethod
     def execute_instruction(
-        self, address: int, payload: Tuple[int, ...]  # dead: disable
+        self, address: int, payload: Tuple[int, ...], **kwargs  # dead: disable
     ) -> ComResult:
         """Abstract method for executing instructions on UOSInterfaces.
 
@@ -211,21 +233,25 @@ class Device:
     """Define an implemented UOS device dictionary."""
 
     name: str
+    versions: {}
     interfaces: list
     functions_enabled: dict
     digital_pins: dict = field(default_factory=dict)
     analogue_pins: dict = field(default_factory=dict)
     aux_params: dict = field(default_factory=dict)
 
-    def get_compatible_pins(self, function_name: str) -> {}:
+    def get_compatible_pins(self, function: UOSFunction) -> {}:
         """Return a dict of pin objects that are suitable for a function.
 
-        :param function_name: the string name of the UOS Schema function.
+        :param function: the string name of the UOS Schema function.
         :return: Dict of pin objects, keyed on pin index.
         """
-        if function_name not in UOS_SCHEMA:
-            raise UOSUnsupportedError(f"UOS function {function_name} doesn't exist.")
-        requirements = UOS_SCHEMA[function_name].pin_requirements
+        if (
+            not isinstance(function, UOSFunction)
+            or function not in UOSFunctions.enumerate_functions()
+        ):
+            raise UOSUnsupportedError(f"UOS function {function.name} doesn't exist.")
+        requirements = function.pin_requirements
         if requirements is None:  # pins are not relevant to this function
             return {}
         pin_dict = self.analogue_pins if "adc_in" in requirements else self.digital_pins

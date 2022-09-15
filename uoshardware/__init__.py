@@ -6,7 +6,7 @@ from pathlib import Path
 __author__ = "Steve Richardson (Creating Null)"
 __copywright__ = f"2022, {__author__}"
 # Semantic Versioning, MAJOR.MINOR.PATCH[-'pre-release-type'.'num']
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 # Dead code false positive as this constant is for use outside primary project.
 PROJECT = "UOS Hardware"  # dead: disable
 
@@ -16,7 +16,7 @@ class Persistence(Enum):
     """Volatility levels that can be used in UOS instructions."""
 
     NONE = 0
-    RAM = 1
+    RAM = 1  # dead: disable
     EEPROM = 2  # dead: disable
 
 

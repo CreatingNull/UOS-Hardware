@@ -9,7 +9,8 @@ Supported Hardware
 
 Supported devices are enumerated and defined in `uoshardware.devices.py`.
 
-All devices are defined using the `Devices` abstraction class.
+All devices are defined using the `Device` abstraction class.
+This class
 
 .. autoclass:: uoshardware.abstractions.Device
    :members:

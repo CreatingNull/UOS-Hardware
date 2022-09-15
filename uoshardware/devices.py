@@ -1,5 +1,6 @@
 """Module defining supported hardware definitions."""
-from uoshardware.abstractions import UOS_SCHEMA, Device, Pin
+from uoshardware import Persistence
+from uoshardware.abstractions import Device, Pin, UOSFunctions
 from uoshardware.interface import Interface
 
 
@@ -27,11 +28,6 @@ def get_device_definition(identity: str) -> Device:
     """
     if identity is not None and identity.lower() in DEVICES:
         device = DEVICES[identity.lower()]
-        for function_enabled in device.functions_enabled:
-            device.functions_enabled[function_enabled] = {
-                vol: UOS_SCHEMA[function_enabled].address_lut[vol]
-                for vol in device.functions_enabled[function_enabled]
-            }
     else:
         device = None
     return device
@@ -39,15 +35,16 @@ def get_device_definition(identity: str) -> Device:
 
 ARDUINO_NANO_3 = Device(
     name="Arduino Nano 3",
+    versions={},
     interfaces=[Interface.STUB, Interface.SERIAL],
     functions_enabled={
-        "set_gpio_output": {0: True},
-        "get_gpio_input": {0: True},
-        "get_adc_input": {0: True},
-        "reset_all_io": {0: True},
-        "hard_reset": {0: True},
-        "get_system_info": {0: True},
-        "get_gpio_config": {0: True},
+        UOSFunctions.set_gpio_output.name: [Persistence.NONE],
+        UOSFunctions.get_gpio_input.name: [Persistence.NONE],
+        UOSFunctions.get_adc_input.name: [Persistence.NONE],
+        UOSFunctions.reset_all_io.name: [Persistence.NONE],
+        UOSFunctions.hard_reset.name: [Persistence.NONE],
+        UOSFunctions.get_system_info.name: [Persistence.NONE],
+        UOSFunctions.get_gpio_config.name: [Persistence.NONE],
     },
     digital_pins={
         2: Pin(gpio_out=True, gpio_in=True, pull_up=True, pc_int=True, hw_int=True),
@@ -148,7 +145,6 @@ ARDUINO_NANO_3 = Device(
     },
     aux_params={"default_baudrate": 115200},
 )
-
 
 DEVICES = {
     "hwid0": ARDUINO_NANO_3,

@@ -4,7 +4,7 @@ from inspect import signature
 import pytest
 
 from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
-from uoshardware.abstractions import UOS_SCHEMA, UOSInterface
+from uoshardware.abstractions import UOSFunctions, UOSInterface
 from uoshardware.api import UOSDevice
 from uoshardware.devices import enumerate_system_devices
 from uoshardware.interface import Interface
@@ -47,36 +47,33 @@ class TestHardwareCOMInterface:
                 device.open()
 
     @staticmethod
-    @pytest.mark.parametrize("function_name", UOS_SCHEMA.keys())
-    def test_device_function(uos_device, function_name):
+    @pytest.mark.parametrize("function", UOSFunctions.enumerate_functions())
+    def test_device_function(uos_device, function):
         """Checks the UOS functions respond correctly."""
         for volatility in Persistence:
-            if volatility not in uos_device.device.functions_enabled[function_name]:
+            if volatility not in uos_device.device.functions_enabled[function.name]:
                 continue  # Ignore unsupported volatilities for device
-            pins = uos_device.device.get_compatible_pins(function_name)
+            pins = uos_device.device.get_compatible_pins(function)
             if pins is None or len(pins) == 0:
                 pins = [0]  # insert a dummy pin for non-pinned functions.
             for pin in pins:
-                function = getattr(uos_device, function_name)
+                api_function = getattr(uos_device, function.name)
                 call_arguments = {}
-                if "pin" in signature(function).parameters.keys():
+                if "pin" in signature(api_function).parameters.keys():
                     call_arguments["pin"] = pin
-                if "level" in signature(function).parameters.keys():
+                if "level" in signature(api_function).parameters.keys():
                     call_arguments["level"] = 0
-                if "volatility" in signature(function).parameters.keys():
+                if "volatility" in signature(api_function).parameters.keys():
                     call_arguments["volatility"] = volatility
-                result = function(**call_arguments)
+                result = api_function(**call_arguments)
                 assert result.status
-                assert len(result.rx_packets) == len(
-                    UOS_SCHEMA[function_name].rx_packets_expected
-                )
+                assert len(result.rx_packets) == len(function.rx_packets_expected)
                 for i, rx_packet in enumerate(result.rx_packets):
                     assert (  # packet length validation
-                        len(rx_packet)
-                        == 6 + UOS_SCHEMA[function_name].rx_packets_expected[i]
+                        len(rx_packet) == 6 + function.rx_packets_expected[i]
                     )
                     assert (  # payload length validation
-                        rx_packet[3] == UOS_SCHEMA[function_name].rx_packets_expected[i]
+                        rx_packet[3] == function.rx_packets_expected[i]
                     )
 
     @staticmethod

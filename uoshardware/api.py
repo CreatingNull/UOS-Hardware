@@ -3,14 +3,21 @@ from logging import getLogger as Log
 from typing import Union
 
 from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
-from uoshardware.abstractions import ComResult, Device, InstructionArguments
+from uoshardware.abstractions import (
+    ComResult,
+    Device,
+    InstructionArguments,
+    UOSFunction,
+    UOSFunctions,
+)
 from uoshardware.devices import get_device_definition
 from uoshardware.interface import Interface
 from uoshardware.interface.serial import Serial
 from uoshardware.interface.stub import Stub
 
 
-class UOSDevice:
+# Interface aimed for use by client projects, dead false positive.
+class UOSDevice:  # dead: disable
     """Class for high level object-orientated control of UOS devices.
 
     :ivar identity: The type of device, this is must have a valid device in the config.
@@ -80,9 +87,8 @@ class UOSDevice:
         :return: ComResult object.
         """
         return self.__execute_instruction(
-            UOSDevice.set_gpio_output.__name__,
+            UOSFunctions.set_gpio_output,
             InstructionArguments(
-                device_function_lut=self.device.functions_enabled,
                 payload=(pin, 0, level),
                 check_pin=pin,
                 volatility=volatility,
@@ -100,9 +106,8 @@ class UOSDevice:
         :return: ComResult object.
         """
         return self.__execute_instruction(
-            UOSDevice.get_gpio_input.__name__,
+            UOSFunctions.get_gpio_input,
             InstructionArguments(
-                device_function_lut=self.device.functions_enabled,
                 payload=(pin, 1, level),
                 expected_rx_packets=2,
                 check_pin=pin,
@@ -122,9 +127,8 @@ class UOSDevice:
         :return: ComResult object containing the ADC readings.
         """
         return self.__execute_instruction(
-            UOSDevice.get_adc_input.__name__,
+            UOSFunctions.get_adc_input,
             InstructionArguments(
-                device_function_lut=self.device.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
                 check_pin=pin,
@@ -138,9 +142,8 @@ class UOSDevice:
         :return: ComResult object containing the system information.
         """
         return self.__execute_instruction(
-            UOSDevice.get_system_info.__name__,
+            UOSFunctions.get_system_info,
             InstructionArguments(
-                device_function_lut=self.device.functions_enabled,
                 expected_rx_packets=2,
             ),
         )
@@ -152,9 +155,8 @@ class UOSDevice:
         :return: ComResult object containing the system information.
         """
         return self.__execute_instruction(
-            UOSDevice.get_gpio_config.__name__,
+            UOSFunctions.get_gpio_config,
             InstructionArguments(
-                device_function_lut=self.device.functions_enabled,
                 payload=tuple([pin]),
                 expected_rx_packets=2,
                 check_pin=pin,
@@ -164,15 +166,15 @@ class UOSDevice:
     def reset_all_io(self) -> ComResult:
         """Execute the reset IO at the defined volatility level."""
         return self.__execute_instruction(
-            UOSDevice.reset_all_io.__name__,
-            InstructionArguments(device_function_lut=self.device.functions_enabled),
+            UOSFunctions.reset_all_io,
+            InstructionArguments(),
         )
 
     def hard_reset(self) -> ComResult:
         """Hard reset functionality for the UOS Device."""
         return self.__execute_instruction(
-            UOSDevice.hard_reset.__name__,
-            InstructionArguments(device_function_lut=self.device.functions_enabled),
+            UOSFunctions.hard_reset,
+            InstructionArguments(),
         )
 
     def open(self):
@@ -197,44 +199,44 @@ class UOSDevice:
 
     def __execute_instruction(
         self,
-        function_name: str,
+        function: UOSFunction,
         instruction_data: InstructionArguments,
         retry: bool = True,
     ) -> ComResult:
         """Execute a generic UOS function and get the result.
 
-        :param function_name: The name of the function in the OOL.
+        :param function: The name of the function in the OOL.
         :param instruction_data: device_functions from the LUT, payload ect.
         :param retry: Allows the instruction to retry execution when fails.
         :return: ComResult object
         :raises: UOSUnsupportedError if function is not possible on the loaded device.
         """
-        if function_name not in self.device.functions_enabled or (
-            instruction_data.check_pin is not None
-            and instruction_data.check_pin
-            not in self.device.get_compatible_pins(function_name)
+        if (
+            function.name not in self.device.functions_enabled
+            or (
+                instruction_data.check_pin is not None
+                and instruction_data.check_pin
+                not in self.device.get_compatible_pins(function)
+            )
+            or instruction_data.volatility
+            not in self.device.functions_enabled[function.name]
         ):
             Log(__name__).debug(
                 "Known functions %s", str(self.device.functions_enabled.keys())
             )
             raise UOSUnsupportedError(
-                f"{function_name}({instruction_data.volatility.name}) "
+                f"{function.name}({instruction_data.volatility.name}) "
                 f"has not been implemented for {self.identity}"
             )
         rx_response = ComResult(False)
         if self.is_lazy():  # Lazy loaded
             self.open()
-        if (
-            instruction_data.device_function_lut[function_name][
-                instruction_data.volatility.value
-            ]
-            >= 0
-        ):  # a normal instruction
+        if function.address_lut[instruction_data.volatility] >= 0:
+            # a normal instruction
             tx_response = self.__device_interface.execute_instruction(
-                instruction_data.device_function_lut[function_name][
-                    instruction_data.volatility.value
-                ],
+                function.address_lut[instruction_data.volatility],
                 instruction_data.payload,
+                function=function,
             )
             if tx_response.status:
                 rx_response = self.__device_interface.read_response(
@@ -260,13 +262,13 @@ class UOSDevice:
                             computed_checksum == current_packet[-2]
                         )
         else:  # run a special action
-            rx_response = getattr(self.__device_interface, function_name)()
+            rx_response = getattr(self.__device_interface, function.name)()
         if self.is_lazy():  # Lazy loaded
             self.close()
         if (
             not rx_response.status and retry
         ):  # allow one retry per instruction due to DTR resets
-            return self.__execute_instruction(function_name, instruction_data, False)
+            return self.__execute_instruction(function, instruction_data, False)
         return rx_response
 
     def is_lazy(self) -> bool:
