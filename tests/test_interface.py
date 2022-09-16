@@ -181,7 +181,7 @@ class TestHardwareCOMAbstractions:
             [[255], 1],  # overflow case
             [[0], 0],  # base case
             [
-                (  # simple NPC packet case
+                tuple(  # simple NPC packet case
                     [
                         TEST_PACKETS[0].address_to,
                         TEST_PACKETS[0].address_from,
@@ -192,7 +192,7 @@ class TestHardwareCOMAbstractions:
                 TEST_PACKETS[0].checksum,
             ],
             [
-                (  # simple NPC packet case
+                tuple(  # simple NPC packet case
                     [
                         TEST_PACKETS[1].address_to,
                         TEST_PACKETS[1].address_from,
@@ -203,7 +203,7 @@ class TestHardwareCOMAbstractions:
                 TEST_PACKETS[1].checksum,
             ],
             [
-                (  # simple NPC packet case
+                tuple(  # simple NPC packet case
                     [
                         TEST_PACKETS[2].address_to,
                         TEST_PACKETS[2].address_from,
@@ -215,7 +215,7 @@ class TestHardwareCOMAbstractions:
             ],
         ],
     )
-    def test_get_npc_checksum(test_packet_data: list, expected_lrc: int):
+    def test_get_npc_checksum(test_packet_data: tuple, expected_lrc: int):
         """Checks the computation of LRC checksums for some known packets."""
         print(f"\n -> packet: {test_packet_data}, lrc:{expected_lrc}")
         assert UOSInterface.get_npc_checksum(test_packet_data) == expected_lrc
@@ -224,17 +224,17 @@ class TestHardwareCOMAbstractions:
     @pytest.mark.parametrize(
         "test_packet", [TEST_PACKETS[0], TEST_PACKETS[1], TEST_PACKETS[2]]
     )
-    def test_get_npc_packet(test_packet: dict):
+    def test_get_npc_packet(test_packet: Packet):
         """Checks packets are formed correctly from some known data."""
         print(
-            f"\n -> addr_to: {test_packet['addr_to']}, addr_from: {test_packet['addr_from']}, "
-            f"payload: {test_packet['payload']}, packet: {test_packet['binary']}"
+            f"\n -> addr_to: {test_packet.address_to}, addr_from: {test_packet.address_from}, "
+            f"payload: {test_packet.payload}, packet: {test_packet.binary!r}"
         )
         assert (
             UOSInterface.get_npc_packet(
-                test_packet["addr_to"],
-                test_packet["addr_from"],
-                test_packet["payload"],
+                test_packet.address_to,
+                test_packet.address_from,
+                tuple(test_packet.payload),
             )
-            == test_packet["binary"]
+            == test_packet.binary
         )

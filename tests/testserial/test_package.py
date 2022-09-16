@@ -1,9 +1,13 @@
-"""Module for testing the the USB serial package hardware interface."""
+"""Module for testing the USB serial package hardware interface."""
 from time import sleep
 
 import pytest
 
 from uoshardware.interface.serial import Serial
+
+# Allow access to protected members in test module.
+# Intended as protected only for safety in client code.
+# pylint: disable=W0212
 
 
 class TestSerialPort:
@@ -25,10 +29,10 @@ class TestSerialPort:
         return serial_port
 
     @staticmethod
-    def test_basic_functions(npc_serial_port):
+    def test_basic_functions(npc_serial_port: Serial):
         """Checks some low level execution on a NPCSerialPort fixture."""
         assert npc_serial_port.open()
-        assert npc_serial_port.check_open()
+        assert npc_serial_port._device is not None
         sleep(2)  # Allow the system time to boot
         assert npc_serial_port.execute_instruction(64, (13, 0, 1)).status
         response = npc_serial_port.read_response(expect_packets=1, timeout_s=2)
@@ -38,13 +42,13 @@ class TestSerialPort:
         assert (
             npc_serial_port.close()
         )  # should be safe to close an already closed connection
-        assert not npc_serial_port.check_open()
+        assert npc_serial_port._device is None
         assert isinstance(npc_serial_port.enumerate_devices(), list)
 
     @staticmethod
-    def test_basic_fault_cases(invalid_serial_port):
+    def test_basic_fault_cases(invalid_serial_port: Serial):
         """Checks the invalid fixture fails correctly."""
-        assert not invalid_serial_port.check_open()
+        assert invalid_serial_port._device is None
         assert not invalid_serial_port.open()
         assert invalid_serial_port.close()
         assert not invalid_serial_port.execute_instruction(64, (13, 0, 1)).status

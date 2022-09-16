@@ -2,7 +2,6 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
 from functools import lru_cache
-from typing import Dict, List, Tuple
 
 from uoshardware import Persistence, UOSUnsupportedError
 
@@ -78,9 +77,9 @@ class ComResult:
 
     status: bool
     exception: str = ""
-    ack_packet: List = field(default_factory=list)
-    rx_packets: List = field(default_factory=list)
-    aux_data: Dict = field(default_factory=dict)
+    ack_packet: list = field(default_factory=list)
+    rx_packets: list = field(default_factory=list)
+    aux_data: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -99,7 +98,7 @@ class UOSInterface(metaclass=ABCMeta):
     # Dead code suppression used as abstract interfaces are false positives.
     @abstractmethod
     def execute_instruction(
-        self, address: int, payload: Tuple[int, ...], **kwargs  # dead: disable
+        self, address: int, payload: tuple[int, ...], **kwargs  # dead: disable
     ) -> ComResult:
         """Abstract method for executing instructions on UOSInterfaces.
 
@@ -173,7 +172,7 @@ class UOSInterface(metaclass=ABCMeta):
 
     @staticmethod
     @lru_cache(maxsize=100)
-    def get_npc_packet(to_addr: int, from_addr: int, payload: Tuple[int, ...]) -> bytes:
+    def get_npc_packet(to_addr: int, from_addr: int, payload: tuple[int, ...]) -> bytes:
         """Generate a standardised NPC binary packet.
 
         :param to_addr: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.
@@ -184,7 +183,7 @@ class UOSInterface(metaclass=ABCMeta):
         if (
             to_addr < 256 and from_addr < 256 and len(payload) < 256
         ):  # check input is possible to parse
-            packet_data = [to_addr, from_addr, len(payload)] + list(payload)
+            packet_data = tuple([to_addr, from_addr, len(payload)] + list(payload))
             lrc = UOSInterface.get_npc_checksum(packet_data)
             return bytes(
                 [0x3E, packet_data[0], packet_data[1], len(payload)]
@@ -194,7 +193,7 @@ class UOSInterface(metaclass=ABCMeta):
         return bytes([])
 
     @staticmethod
-    def get_npc_checksum(packet_data: list[int]) -> int:
+    def get_npc_checksum(packet_data: tuple[int, ...]) -> int:
         """Generate a NPC LRC checksum.
 
         :param packet_data: List of the uint8 values from an NPC packet.
