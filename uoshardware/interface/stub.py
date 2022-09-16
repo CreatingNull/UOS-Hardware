@@ -9,7 +9,7 @@ class Stub(UOSInterface):
 
     def __init__(self, connection: str, errored: int = 0):
         """Instantiate an instance of the test stub."""
-        self.__packet_buffer = []
+        self.__packet_buffer: list = []
         self.__open = False
         self.errored = errored
         self.connection = connection
@@ -78,6 +78,6 @@ class Stub(UOSInterface):
         return self.errored == 0
 
     @staticmethod
-    def enumerate_devices() -> []:
+    def enumerate_devices() -> list:
         """Return a list of test stubs implemented in the interface."""
         return [Stub("STUB")]  # The test stub is always available

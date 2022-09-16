@@ -89,3 +89,8 @@ repos:
     rev: "a6fe4222012e990042c86cdaaa904a8d059752ee"
     hooks:
     -   id: pydocstyle
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.971
+    hooks:
+    -   id: mypy

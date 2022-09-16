@@ -5,7 +5,9 @@ from uoshardware.interface import Interface
 
 
 # This is an interface for client implementations dead code false positive.
-def enumerate_system_devices(interface_filter: Interface = None) -> []:  # dead: disable
+def enumerate_system_devices(  # dead: disable
+    interface_filter: Interface = None,
+) -> list:
     """Iterate through all interfaces and locates available devices.
 
     :param interface_filter: Interface enum to limit the search to a single interface type.
@@ -20,7 +22,7 @@ def enumerate_system_devices(interface_filter: Interface = None) -> []:  # dead:
     return system_devices
 
 
-def get_device_definition(identity: str) -> Device:
+def get_device_definition(identity: str) -> Device | None:
     """Look up the system config dictionary for the defined device mappings.
 
     :param identity: String containing the lookup key of the device in the dictionary.

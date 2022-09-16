@@ -1,21 +1,33 @@
 """Unit tests for the hardware interface module."""
+from dataclasses import dataclass
 from inspect import signature
 
 import pytest
 
 from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
-from uoshardware.abstractions import UOSFunctions, UOSInterface
+from uoshardware.abstractions import UOSFunction, UOSFunctions, UOSInterface
 from uoshardware.api import UOSDevice
 from uoshardware.devices import enumerate_system_devices
 from uoshardware.interface import Interface
 from uoshardware.interface.stub import Stub
 
 
+@dataclass
+class Packet:
+    """Dataclass for storing test packet definitions."""
+
+    address_to: int
+    address_from: int
+    payload: list
+    checksum: int
+    binary: bytes
+
+
 class TestHardwareCOMInterface:
     """Tests for the object orientated abstraction layer."""
 
     @staticmethod
-    def test_implemented_devices(uos_identities: {}):
+    def test_implemented_devices(uos_identities: dict):
         """Checks devices in config can init without error."""
         assert (
             UOSDevice(
@@ -34,7 +46,7 @@ class TestHardwareCOMInterface:
 
     @staticmethod
     @pytest.mark.parametrize("interface", Interface)  # checks all interfaces
-    def test_bad_connection(uos_identities: {}, interface: Interface):
+    def test_bad_connection(uos_identities: dict, interface: Interface):
         """Checks that bad connections fail sensibly."""
         with pytest.raises(UOSCommunicationError):
             device = UOSDevice(
@@ -48,7 +60,7 @@ class TestHardwareCOMInterface:
 
     @staticmethod
     @pytest.mark.parametrize("function", UOSFunctions.enumerate_functions())
-    def test_device_function(uos_device, function):
+    def test_device_function(uos_device, function: UOSFunction):
         """Checks the UOS functions respond correctly."""
         for volatility in Persistence:
             if volatility not in uos_device.device.functions_enabled[function.name]:
@@ -104,27 +116,27 @@ class TestHardwareCOMAbstractions:
     """Test for the UOSInterface abstraction layer and helper functions."""
 
     TEST_PACKETS = [
-        {
-            "addr_to": 0,
-            "addr_from": 1,
-            "payload": tuple([1]),
-            "checksum": 253,
-            "binary": b">\x00\x01\x01\x01\xfd<",
-        },
-        {
-            "addr_to": 64,
-            "addr_from": 0,
-            "payload": (13, 0, 1, 12, 1, 0),
-            "checksum": 159,
-            "binary": b">\x40\x00\x06\x0d\x00\x01\x0c\x01\x00\x9f<",
-        },
-        {  # Bad packet
-            "addr_to": 256,
-            "addr_from": 256,
-            "payload": tuple(),
-            "checksum": 0,
-            "binary": b"",
-        },
+        Packet(
+            address_to=0,
+            address_from=1,
+            payload=[1],
+            checksum=253,
+            binary=b">\x00\x01\x01\x01\xfd<",
+        ),
+        Packet(
+            address_to=64,
+            address_from=0,
+            payload=[13, 0, 1, 12, 1, 0],
+            checksum=159,
+            binary=b">\x40\x00\x06\x0d\x00\x01\x0c\x01\x00\x9f<",
+        ),
+        Packet(  # Bad packet
+            address_to=256,
+            address_from=256,
+            payload=[],
+            checksum=0,
+            binary=b"",
+        ),
     ]
 
     @staticmethod
@@ -171,39 +183,39 @@ class TestHardwareCOMAbstractions:
             [
                 (  # simple NPC packet case
                     [
-                        TEST_PACKETS[0]["addr_to"],
-                        TEST_PACKETS[0]["addr_from"],
-                        len(TEST_PACKETS[0]["payload"]),
+                        TEST_PACKETS[0].address_to,
+                        TEST_PACKETS[0].address_from,
+                        len(TEST_PACKETS[0].payload),
                     ]
-                    + list(TEST_PACKETS[0]["payload"])
+                    + list(TEST_PACKETS[0].payload)
                 ),
-                TEST_PACKETS[0]["checksum"],
+                TEST_PACKETS[0].checksum,
             ],
             [
                 (  # simple NPC packet case
                     [
-                        TEST_PACKETS[1]["addr_to"],
-                        TEST_PACKETS[1]["addr_from"],
-                        len(TEST_PACKETS[1]["payload"]),
+                        TEST_PACKETS[1].address_to,
+                        TEST_PACKETS[1].address_from,
+                        len(TEST_PACKETS[1].payload),
                     ]
-                    + list(TEST_PACKETS[1]["payload"])
+                    + TEST_PACKETS[1].payload
                 ),
-                TEST_PACKETS[1]["checksum"],
+                TEST_PACKETS[1].checksum,
             ],
             [
                 (  # simple NPC packet case
                     [
-                        TEST_PACKETS[2]["addr_to"],
-                        TEST_PACKETS[2]["addr_from"],
-                        len(TEST_PACKETS[2]["payload"]),
+                        TEST_PACKETS[2].address_to,
+                        TEST_PACKETS[2].address_from,
+                        len(TEST_PACKETS[2].payload),
                     ]
-                    + list(TEST_PACKETS[2]["payload"])
+                    + TEST_PACKETS[2].payload
                 ),
-                TEST_PACKETS[2]["checksum"],
+                TEST_PACKETS[2].checksum,
             ],
         ],
     )
-    def test_get_npc_checksum(test_packet_data: [], expected_lrc: int):
+    def test_get_npc_checksum(test_packet_data: list, expected_lrc: int):
         """Checks the computation of LRC checksums for some known packets."""
         print(f"\n -> packet: {test_packet_data}, lrc:{expected_lrc}")
         assert UOSInterface.get_npc_checksum(test_packet_data) == expected_lrc
@@ -212,7 +224,7 @@ class TestHardwareCOMAbstractions:
     @pytest.mark.parametrize(
         "test_packet", [TEST_PACKETS[0], TEST_PACKETS[1], TEST_PACKETS[2]]
     )
-    def test_get_npc_packet(test_packet: {}):
+    def test_get_npc_packet(test_packet: dict):
         """Checks packets are formed correctly from some known data."""
         print(
             f"\n -> addr_to: {test_packet['addr_to']}, addr_from: {test_packet['addr_from']}, "

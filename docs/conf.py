@@ -8,7 +8,7 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html#project-informatio
 """
 import os
 import sys
-from re import match
+from re import Match, match
 
 sys.path.insert(0, os.path.abspath("../"))
 
@@ -19,7 +19,10 @@ project = PROJECT
 copyright = __copywright__  # noqa
 author = __author__
 # The short MAJOR.MINOR version.
-version = match(r"^\d.\d", __version__).group(0)
+if isinstance(version_match := match(r"^\d.\d", __version__), Match):
+    version = version_match.group(0)
+else:
+    version = "None"
 # The full version, including alpha/beta/rc tags.
 release = __version__
 

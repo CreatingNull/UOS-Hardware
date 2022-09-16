@@ -5,6 +5,7 @@ Version 0.2.0
 
 * Major refactoring to device handling and top-level UOS schema definitions.
   This is to improve OOP consistency across the project and reduce reliance on string name lookup.
+* Drop support for python 3.9 in preference of clean typing.
 
 Version 0.1.1
 -------------

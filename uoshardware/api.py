@@ -9,6 +9,7 @@ from uoshardware.abstractions import (
     InstructionArguments,
     UOSFunction,
     UOSFunctions,
+    UOSInterface,
 )
 from uoshardware.devices import get_device_definition
 from uoshardware.interface import Interface
@@ -20,18 +21,18 @@ from uoshardware.interface.stub import Stub
 class UOSDevice:  # dead: disable
     """Class for high level object-orientated control of UOS devices.
 
+    :ivar device: Device definitions as parsed from a compatible ini.
     :ivar identity: The type of device, this is must have a valid device in the config.
     :ivar connection: Compliant connection string for identifying the device and interface.
-    :ivar device: Device definitions as parsed from a compatible ini.
-    :ivar __kwargs: Connection specific / optional parameters.
     :ivar __device_interface: Lower level communication protocol layer.
+    :ivar __kwargs: Connection specific / optional parameters.
     """
 
+    device: Device
     identity = ""
     address = ""
-    device = Device
-    __kwargs = {}
-    __device_interface = None
+    __device_interface: UOSInterface
+    __kwargs: dict = {}
 
     def __init__(
         self,
@@ -47,17 +48,20 @@ class UOSDevice:  # dead: disable
         :param interface: Set the type of interface to use for communication.
         :param kwargs: Additional optional connection parameters as defined in documentation.
         """
-        self.identity = identity
         self.address = address
-        if isinstance(identity, str):
-            self.device = get_device_definition(identity)
-        else:
-            self.device = identity
         self.__kwargs = kwargs
-        if self.device is None:
+        device = None
+        if isinstance(identity, Device):
+            self.identity = identity.name
+            device = identity
+        elif isinstance(identity, str):
+            self.identity = identity
+            device = get_device_definition(identity)
+        if device is None:
             raise UOSUnsupportedError(
                 f"'{self.identity}' does not have a valid look up table"
             )
+        self.device = device
         if interface == Interface.SERIAL and Interface.SERIAL in self.device.interfaces:
             self.__device_interface = Serial(
                 address,
@@ -68,9 +72,9 @@ class UOSDevice:  # dead: disable
                 connection=address,
                 errored=(kwargs["errored"] if "errored" in kwargs else False),
             )
-        else:
-            raise UOSCommunicationError(
-                f"Could not correctly open a connection to {self.identity} - {self.address}"
+        if self.__device_interface is None:
+            raise UOSUnsupportedError(
+                f"'{interface}' cannot be used for device `{self.identity}`"
             )
         if not self.is_lazy():  # eager connections open when they are created
             self.open()

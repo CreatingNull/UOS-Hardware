@@ -15,7 +15,7 @@ class UOSFunction:
     address_lut: dict
     ack: bool
     rx_packets_expected: list = field(default_factory=list)
-    pin_requirements: list = None
+    pin_requirements: list | None = None
 
 
 @dataclass
@@ -63,7 +63,7 @@ class UOSFunctions:
     )
 
     @staticmethod
-    def enumerate_functions() -> []:
+    def enumerate_functions() -> list:
         """Return all the defined UOSFunction objects."""
         return [
             getattr(UOSFunctions, member_name)
@@ -89,7 +89,7 @@ class InstructionArguments:
 
     payload: tuple = ()
     expected_rx_packets: int = 1
-    check_pin: int = None
+    check_pin: int | None = None
     volatility: Persistence = Persistence.NONE
 
 
@@ -161,7 +161,7 @@ class UOSInterface(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def enumerate_devices() -> []:
+    def enumerate_devices() -> list:
         """Return a list of UOSDevices visible to the driver.
 
         :return: A list of possible UOSInterfaces on the server.
@@ -233,14 +233,14 @@ class Device:
     """Define an implemented UOS device dictionary."""
 
     name: str
-    versions: {}
+    versions: dict
     interfaces: list
     functions_enabled: dict
     digital_pins: dict = field(default_factory=dict)
     analogue_pins: dict = field(default_factory=dict)
     aux_params: dict = field(default_factory=dict)
 
-    def get_compatible_pins(self, function: UOSFunction) -> {}:
+    def get_compatible_pins(self, function: UOSFunction) -> dict:
         """Return a dict of pin objects that are suitable for a function.
 
         :param function: the string name of the UOS Schema function.

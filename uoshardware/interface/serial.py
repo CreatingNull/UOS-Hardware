@@ -28,7 +28,7 @@ class Serial(UOSInterface):
 
     _connection = ""
     _port = None
-    _kwargs = {}
+    _kwargs: dict = {}
 
     def __init__(self, connection: str, **kwargs):
         """Create an NPCSerialPort device.
@@ -90,7 +90,7 @@ class Serial(UOSInterface):
 
         :return: Success boolean.
         """
-        if not self.check_open():
+        if self._device is None:
             return True  # already closed
         try:
             self._device.close()
@@ -110,7 +110,7 @@ class Serial(UOSInterface):
         :param payload: A tuple containing the uint8 parameters of the UOS instruction.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
-        if not self.check_open():
+        if self._device is None:
             return ComResult(False, exception="Connection must be opened first.")
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
         Log(__name__).debug("packet formed %s", packet)
@@ -132,10 +132,10 @@ class Serial(UOSInterface):
         :return: ComResult object.
         """
         response_object = ComResult(False)
-        if not self.check_open():
+        if self._device is None:
             return response_object
         start_ns = time_ns()
-        packet = []
+        packet: list = []
         byte_index = -1  # tracks the byte position index of the current packet
         packet_index = 0  # tracks the packet number being received 0 = ACK
         try:
@@ -176,22 +176,13 @@ class Serial(UOSInterface):
 
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
-        if not self.check_open():
+        if self._device is None:
             return ComResult(False, exception="Connection must be open first.")
         Log(__name__).debug("Resetting the device using the DTR line")
         self._device.dtr = not self._device.dtr
         sleep(0.2)
         self._device.dtr = not self._device.dtr
         return ComResult(True)
-
-    def check_open(self) -> bool:
-        """Test if the connection is open.
-
-        :return: Boolean, true if open.
-        """
-        if self._device is None:
-            return False
-        return True
 
     def __repr__(self):
         """Representation of object.
@@ -206,7 +197,7 @@ class Serial(UOSInterface):
     @staticmethod
     def decode_and_capture(
         byte_index: int, byte_in: bytes, packet: list
-    ) -> (int, list):
+    ) -> tuple[int, list]:
         """Parser takes in a byte and vets it against UOS packet.
 
         :param byte_index: The index of the last 'valid' byte found.
