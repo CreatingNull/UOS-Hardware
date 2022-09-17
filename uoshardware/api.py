@@ -1,6 +1,5 @@
 """Provides the HAL layer for communicating with the hardware."""
 from logging import getLogger as Log
-from typing import Union
 
 from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import (
@@ -36,7 +35,7 @@ class UOSDevice:  # dead: disable
 
     def __init__(
         self,
-        identity: Union[str, Device],
+        identity: str | Device,
         address: str,
         interface: Interface = Interface.SERIAL,
         **kwargs,

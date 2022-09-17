@@ -1,6 +1,4 @@
 """Package is used as a simulated UOSInterface for test purposes."""
-from typing import Tuple
-
 from uoshardware.abstractions import ComResult, UOSInterface
 
 
@@ -18,7 +16,7 @@ class Stub(UOSInterface):
         self,
         address: int,
         # Dead code false positive as this is over-riding an interface.
-        payload: Tuple[int, ...],  # dead: disable
+        payload: tuple[int, ...],  # dead: disable
         **kwargs,
     ) -> ComResult:
         """Simulate executing an instruction on a UOS endpoint.
