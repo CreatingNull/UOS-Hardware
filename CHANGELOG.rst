@@ -1,7 +1,7 @@
 Version 0.2.0
 -------------
 
-:Date: TBC
+:Date: 18-September-2022
 
 * Major refactoring to device handling and top-level UOS schema definitions.
   This is to improve OOP consistency across the project and reduce reliance on string name lookup.
