@@ -61,7 +61,7 @@ class Serial(UOSInterface):
                 self._device.baudrate = self._kwargs["baudrate"]
             if platform.system() == "Linux":  # DTR transient workaround for Unix
                 Log(__name__).debug("Linux platform found so using DTR workaround")
-                with open(self._connection, encoding="b") as port:
+                with open(self._connection, mode="rb") as port:
                     attrs = termios.tcgetattr(port)
                     attrs[2] = attrs[2] & ~termios.HUPCL
                     termios.tcsetattr(port, termios.TCSAFLUSH, attrs)

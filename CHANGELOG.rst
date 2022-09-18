@@ -1,3 +1,11 @@
+Version 0.2.1
+-------------
+
+:Date: TBC
+
+* Fixing a bug with the serial backend where DTR reset workaround on linux platforms.
+  Opening the serial connection was defining encoding as binary rather than the mode.
+
 Version 0.2.0
 -------------
 
