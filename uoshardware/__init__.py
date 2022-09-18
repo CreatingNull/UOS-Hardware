@@ -6,7 +6,7 @@ from pathlib import Path
 __author__ = "Steve Richardson (Creating Null)"
 __copywright__ = f"2022, {__author__}"
 # Semantic Versioning, MAJOR.MINOR.PATCH[-'pre-release-type'.'num']
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 # Dead code false positive as this constant is for use outside primary project.
 PROJECT = "UOS Hardware"  # dead: disable
 
