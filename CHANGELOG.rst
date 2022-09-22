@@ -1,3 +1,17 @@
+Version 0.3.0
+-------------
+
+:Date: TBC
+
+* Allowing the UOSDevice interface to be used as a context manager.
+* Adding an is_active function to UOSDevice as a method to indicate if a connection is held open with the device.
+
+TODO
+####
+
+* Raise communication error if connection is handled correctly rather than just setting COM Result as failed.
+* Handle LAZY loading interfaces as context managers? Or ensure try, finally safety.
+
 Version 0.2.1
 -------------
 

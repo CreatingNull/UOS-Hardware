@@ -184,6 +184,10 @@ class Serial(UOSInterface):
         self._device.dtr = not self._device.dtr
         return ComResult(True)
 
+    def is_active(self) -> bool:
+        """Check if connection is active to the device."""
+        return self._device is not None
+
     def __repr__(self):
         """Representation of object.
 

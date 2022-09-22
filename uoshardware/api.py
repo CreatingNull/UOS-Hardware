@@ -79,6 +79,15 @@ class UOSDevice:  # dead: disable
             self.open()
         Log(__name__).debug("Created device %s", self.__device_interface.__repr__())
 
+    def __enter__(self):
+        """Dunder function for opening the interface as a context manager."""
+        return self
+
+    # Dunder context manager prototype, false positive for dead variables.
+    def __exit__(self, exc_type, exc_val, exc_tb):  # dead: disable
+        """Dunder function for closing the interface as a context manager."""
+        self.close()
+
     def set_gpio_output(
         self, pin: int, level: int, volatility: Persistence = Persistence.NONE
     ) -> ComResult:
@@ -282,6 +291,13 @@ class UOSDevice:  # dead: disable
         if "loading" not in self.__kwargs or self.__kwargs["loading"].upper() == "LAZY":
             return True
         return False
+
+    def is_active(self) -> bool:
+        """Check if a connection is being held active to the device.
+
+        :return: Boolean, true if connection is held active.
+        """
+        return self.__device_interface.is_active()
 
     def __repr__(self):
         """Representation of the UOS device.

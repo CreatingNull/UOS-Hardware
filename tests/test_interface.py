@@ -59,6 +59,22 @@ class TestHardwareCOMInterface:
                 device.open()
 
     @staticmethod
+    def test_context_manager(uos_identities: dict):
+        """Check UOS devices can be used as context managers."""
+        with UOSDevice(
+            uos_identities["identity"],
+            uos_identities["address"],
+            uos_identities["interface"],
+            loading=uos_identities["loading"],
+        ) as device:
+            # Check connection works correctly
+            assert device.reset_all_io().status
+        assert not device.is_active()
+        if uos_identities["loading"] == "EAGER":
+            # LAZY loading can use connection when not active as it manages it internally.
+            assert not device.reset_all_io().status
+
+    @staticmethod
     @pytest.mark.parametrize("function", UOSFunctions.enumerate_functions())
     def test_device_function(uos_device, function: UOSFunction):
         """Checks the UOS functions respond correctly."""

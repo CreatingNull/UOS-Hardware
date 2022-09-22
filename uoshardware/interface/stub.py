@@ -75,6 +75,10 @@ class Stub(UOSInterface):
         self.__open = False
         return self.errored == 0
 
+    def is_active(self) -> bool:
+        """Check if connection is active to the device."""
+        return self.__open
+
     @staticmethod
     def enumerate_devices() -> list:
         """Return a list of test stubs implemented in the interface."""

@@ -30,8 +30,8 @@ This is the `hello world` usage for turning on the arduino on-board pin 13 LED.
     from uoshardware.api import UOSDevice
     from uoshardware.devices import ARDUINO_NANO_3
 
-    device = UOSDevice(identity=ARDUINO_NANO_3, address="/dev/ttyUSB0")
-    device.set_gpio_output(pin=13, level=1)  # switch on LED
+    with UOSDevice(identity=ARDUINO_NANO_3, address="/dev/ttyUSB0") as device:
+        device.set_gpio_output(pin=13, level=1)  # switch on LED
 
 Note: that individual pins and functions must be enabled and supported by the `Device`.
 

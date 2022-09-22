@@ -158,6 +158,17 @@ class UOSInterface(metaclass=ABCMeta):
             f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
         )
 
+    @abstractmethod
+    def is_active(self) -> bool:
+        """Abstract method for checking if a connection is being held active.
+
+        :return: Success boolean.
+        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        """
+        raise UOSUnsupportedError(
+            f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
+        )
+
     @staticmethod
     @abstractmethod
     def enumerate_devices() -> list:
