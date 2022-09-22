@@ -241,42 +241,46 @@ class UOSDevice:  # dead: disable
                 f"has not been implemented for {self.identity}"
             )
         rx_response = ComResult(False)
-        if self.is_lazy():  # Lazy loaded
-            self.open()
-        if function.address_lut[instruction_data.volatility] >= 0:
-            # a normal instruction
-            tx_response = self.__device_interface.execute_instruction(
-                function.address_lut[instruction_data.volatility],
-                instruction_data.payload,
-                function=function,
-            )
-            if tx_response.status:
-                rx_response = self.__device_interface.read_response(
-                    instruction_data.expected_rx_packets, 2
+        try:
+            if self.is_lazy():  # Lazy loaded
+                self.open()
+            if function.address_lut[instruction_data.volatility] >= 0:
+                # a normal instruction
+                tx_response = self.__device_interface.execute_instruction(
+                    function.address_lut[instruction_data.volatility],
+                    instruction_data.payload,
+                    function=function,
                 )
-                if rx_response.status:
-                    # validate checksums on all packets
-                    for count in range(len(rx_response.rx_packets) + 1):
-                        current_packet = (
-                            rx_response.ack_packet
-                            if count == 0
-                            else rx_response.rx_packets[count - 1]
-                        )
-                        computed_checksum = self.__device_interface.get_npc_checksum(
-                            current_packet[1:-2]
-                        )
-                        Log(__name__).debug(
-                            "Calculated checksum %s must match rx %s",
-                            computed_checksum,
-                            current_packet[-2],
-                        )
-                        rx_response.status = rx_response.status & (
-                            computed_checksum == current_packet[-2]
-                        )
-        else:  # run a special action
-            rx_response = getattr(self.__device_interface, function.name)()
-        if self.is_lazy():  # Lazy loaded
-            self.close()
+                if tx_response.status:
+                    rx_response = self.__device_interface.read_response(
+                        instruction_data.expected_rx_packets, 2
+                    )
+                    if rx_response.status:
+                        # validate checksums on all packets
+                        for count in range(len(rx_response.rx_packets) + 1):
+                            current_packet = (
+                                rx_response.ack_packet
+                                if count == 0
+                                else rx_response.rx_packets[count - 1]
+                            )
+                            computed_checksum = (
+                                self.__device_interface.get_npc_checksum(
+                                    current_packet[1:-2]
+                                )
+                            )
+                            Log(__name__).debug(
+                                "Calculated checksum %s must match rx %s",
+                                computed_checksum,
+                                current_packet[-2],
+                            )
+                            rx_response.status = rx_response.status & (
+                                computed_checksum == current_packet[-2]
+                            )
+            else:  # run a special action
+                rx_response = getattr(self.__device_interface, function.name)()
+        finally:  # Safety check for lazy loading being used outside of context manager
+            if self.is_lazy():  # Lazy loaded
+                self.close()
         if (
             not rx_response.status and retry
         ):  # allow one retry per instruction due to DTR resets
