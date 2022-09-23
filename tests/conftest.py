@@ -2,17 +2,18 @@
 import pytest
 
 from uoshardware.api import UOSDevice
+from uoshardware.devices import Devices
 from uoshardware.interface import Interface
 
 DEVICES = {
     "Arduino Nano 3 LAZY": {
-        "identity": "arduino_nano",
+        "identity": Devices.arduino_nano,
         "address": "/dev/ttyUSB0",
         "interface": Interface.STUB,
         "loading": "LAZY",
     },
     "Arduino Nano 3 EAGER": {
-        "identity": "arduino_nano",
+        "identity": Devices.arduino_nano,
         "address": "/dev/ttyUSB0",
         "interface": Interface.STUB,
         "loading": "EAGER",

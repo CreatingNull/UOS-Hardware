@@ -10,10 +10,41 @@ from uoshardware.abstractions import (
     UOSFunctions,
     UOSInterface,
 )
-from uoshardware.devices import get_device_definition
+from uoshardware.devices import Devices
 from uoshardware.interface import Interface
 from uoshardware.interface.serial import Serial
 from uoshardware.interface.stub import Stub
+
+
+# This is an interface for client implementations dead code false positive.
+def enumerate_system_devices(  # dead: disable
+    interface_filter: Interface = None,
+) -> list:
+    """Iterate through all interfaces and locates available devices.
+
+    :param interface_filter: Interface enum to limit the search to a single interface type.
+    :return: A list of uosinterface objects.
+    """
+    system_devices = []
+    for interface in Interface:  # enum object
+        if not interface_filter or interface_filter == interface:
+            system_devices.extend(interface.value.enumerate_devices())
+        if interface_filter is not None:
+            break
+    return system_devices
+
+
+def _get_device_definition(identity: str) -> Device | None:
+    """Look up the system config dictionary for the defined device mappings.
+
+    :param identity: String containing the lookup key of the device in the dictionary.
+    :return: Device Object or None if not found
+    """
+    if identity is not None and hasattr(Devices, identity):
+        device = getattr(Devices, identity)
+    else:
+        device = None
+    return device
 
 
 # Interface aimed for use by client projects, dead false positive.
@@ -42,7 +73,7 @@ class UOSDevice:  # dead: disable
     ):
         """Instantiate a UOS device instance for communication.
 
-        :param identity: Specify the type of device, this must exist in the device dictionary.
+        :param identity: Specify the type of device, this must exist in the device LUT.
         :param address: Compliant connection string for identifying the device and interface.
         :param interface: Set the type of interface to use for communication.
         :param kwargs: Additional optional connection parameters as defined in documentation.
@@ -55,7 +86,7 @@ class UOSDevice:  # dead: disable
             device = identity
         elif isinstance(identity, str):
             self.identity = identity
-            device = get_device_definition(identity)
+            device = _get_device_definition(identity)
         if device is None:
             raise UOSUnsupportedError(
                 f"'{self.identity}' does not have a valid look up table"

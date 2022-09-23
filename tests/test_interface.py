@@ -6,8 +6,7 @@ import pytest
 
 from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import UOSFunction, UOSFunctions, UOSInterface
-from uoshardware.api import UOSDevice
-from uoshardware.devices import enumerate_system_devices
+from uoshardware.api import UOSDevice, enumerate_system_devices
 from uoshardware.interface import Interface
 from uoshardware.interface.stub import Stub
 

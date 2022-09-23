@@ -17,7 +17,7 @@ class UOSFunction:
     pin_requirements: list | None = None
 
 
-@dataclass
+@dataclass(init=False, repr=False, frozen=True)
 class UOSFunctions:
     """Class enumerates UOS functions and function requirements."""
 

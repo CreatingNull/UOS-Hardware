@@ -5,6 +5,7 @@ Version 0.3.0
 
 * Allowing the UOSDevice interface to be used as a context manager.
 * Adding an is_active function to UOSDevice as a method to indicate if a connection is held open with the device.
+* Refactored devices lookup to use importable constant names rather than a dictionary.
 * Fixed a bug where using LAZY loading without a context manager could cause connection lockups.
 
 TODO
