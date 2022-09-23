@@ -7,6 +7,7 @@ Version 0.3.0
 * Adding an is_active function to UOSDevice as a method to indicate if a connection is held open with the device.
 * Refactored devices lookup to use importable constant names rather than a dictionary.
 * Fixed a bug where using LAZY loading without a context manager could cause connection lockups.
+* Fixed a bug where pylint was incorrectly defined as a project dep rather than a dev dep.
 
 TODO
 ####
