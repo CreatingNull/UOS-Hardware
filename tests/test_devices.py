@@ -1,4 +1,4 @@
-"""Tests for the hardware configuration module."""
+"""Tests for the devices module."""
 import pytest
 
 from uoshardware import UOSUnsupportedError

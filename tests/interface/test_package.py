@@ -1,4 +1,4 @@
-"""Module for testing the USB serial package hardware interface."""
+"""Module for testing the interface package."""
 from time import sleep
 
 import pytest
