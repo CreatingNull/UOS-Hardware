@@ -106,6 +106,7 @@ class UOSInterface(metaclass=ABCMeta):
         :param payload: A tuple containing the uint8 parameters of the UOS instruction.
         :returns: ComResult object.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        :raises: UOSCommunicationError if there is a problem completing the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.execute_instruction.__name__} prototype."
@@ -121,6 +122,7 @@ class UOSInterface(metaclass=ABCMeta):
         :param timeout_s: The maximum time this function will wait for data.
         :return: COM Result object.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        :raises: UOSCommunicationError if there is a problem completing the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.read_response.__name__} prototype."
@@ -131,28 +133,30 @@ class UOSInterface(metaclass=ABCMeta):
         """UOS loop reset functionality should be as hard a reset as possible.
 
         :return: COM Result object.
+        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        :raises: UOSCommunicationError if there is a problem completing the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.hard_reset.__name__} prototype"
         )
 
     @abstractmethod
-    def open(self) -> bool:
+    def open(self):
         """Abstract method for opening a connection to a UOSInterface.
 
-        :return: Success boolean.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        :raises: UOSCommunicationError if there is a problem completing the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.open.__name__} prototype."
         )
 
     @abstractmethod
-    def close(self) -> bool:
+    def close(self):
         """Abstract method for closing a connection to a UOSInterface.
 
-        :return: Success boolean.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        :raises: UOSCommunicationError if there is a problem completing the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."

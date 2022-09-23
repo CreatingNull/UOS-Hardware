@@ -1,7 +1,7 @@
 """Provides the HAL layer for communicating with the hardware."""
 from logging import getLogger as Log
 
-from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
+from uoshardware import Persistence, UOSUnsupportedError
 from uoshardware.abstractions import (
     ComResult,
     Device,
@@ -225,20 +225,14 @@ class UOSDevice:  # dead: disable
 
         :raises: UOSCommunicationError - Problem opening a connection.
         """
-        if not self.__device_interface.open():
-            raise UOSCommunicationError(
-                "There was an error opening a connection to the device."
-            )
+        self.__device_interface.open()
 
     def close(self):
         """Release connection, must be called explicitly if loading is eager.
 
         :raises: UOSCommunicationError - Problem closing the connection to an active device.
         """
-        if not self.__device_interface.close():
-            raise UOSCommunicationError(
-                "There was an error closing a connection to the device"
-            )
+        self.__device_interface.close()
 
     def __execute_instruction(
         self,

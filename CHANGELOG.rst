@@ -6,13 +6,9 @@ Version 0.3.0
 * Allowing the UOSDevice interface to be used as a context manager.
 * Adding an is_active function to UOSDevice as a method to indicate if a connection is held open with the device.
 * Refactored devices lookup to use importable constant names rather than a dictionary.
+* Removing use of success booleans in low level interface packages / abstractions in preference of more descriptive errors.
 * Fixed a bug where using LAZY loading without a context manager could cause connection lockups.
 * Fixed a bug where pylint was incorrectly defined as a project dep rather than a dev dep.
-
-TODO
-####
-
-* Raise communication error if connection is handled correctly rather than just setting COM Result as failed.
 
 Version 0.2.1
 -------------

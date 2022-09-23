@@ -7,12 +7,11 @@ import serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
 
+from uoshardware import UOSCommunicationError
 from uoshardware.abstractions import ComResult, UOSInterface
 
 if platform.system() == "Linux":
     import termios  # pylint: disable=E0401
-else:
-    pass
 
 
 class Serial(UOSInterface):
@@ -44,17 +43,14 @@ class Serial(UOSInterface):
             Log(__name__).debug("%s located", self._port)
 
     def open(self):
-        """Open a connection to the port and creates the device object.
-
-        :return: Success boolean.
-        """
+        """Open a connection to the port and creates the device object."""
         try:
             self._port = self.check_port_exists(self._connection)
             if self._port is None:
                 Log(__name__).error(
                     "%s device was not present to open", self._connection
                 )
-                return False
+                raise UOSCommunicationError("Device could not be found on system.")
             self._device = serial.Serial()
             self._device.port = self._connection
             if "baudrate" in self._kwargs:
@@ -69,7 +65,7 @@ class Serial(UOSInterface):
                 self._device.dtr = False
             self._device.open()
             Log(__name__).debug("%s opened successfully", self._port.device)
-            return True
+            return
         except (SerialException, FileNotFoundError) as exception:
             Log(__name__).error(
                 "Opening %s threw error %s",
@@ -82,25 +78,26 @@ class Serial(UOSInterface):
                 Log(__name__).error(
                     "Cannot open connection, account has insufficient permissions."
                 )
-            self._device = None
-            return False
+                raise UOSCommunicationError(
+                    "Cannot open connection insufficient permissions."
+                ) from exception
+            raise UOSCommunicationError(
+                f"Failed to open device '{exception}'"
+            ) from exception
 
     def close(self):
-        """Close the serial connection and clear the device.
-
-        :return: Success boolean.
-        """
+        """Close the serial connection and clear the device."""
         if self._device is None:
-            return True  # already closed
+            return  # already closed
         try:
             self._device.close()
         except SerialException as exception:
             Log(__name__).debug("Closing the connection threw error %s", str(exception))
-            self._device = None
-            return False
+            raise UOSCommunicationError(
+                f"Closing connection threw error '{exception}'."
+            ) from exception
         Log(__name__).debug("Connection closed successfully")
         self._device = None
-        return True
 
     # Kwargs is defined in the abstractmethod definition, false positive.
     def execute_instruction(self, address, payload, **kwargs):  # dead: disable
@@ -111,7 +108,9 @@ class Serial(UOSInterface):
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         if self._device is None:
-            return ComResult(False, exception="Connection must be opened first.")
+            raise UOSCommunicationError(
+                "Connection must be open to execute instructions."
+            )
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
         Log(__name__).debug("packet formed %s", packet)
         try:  # Send the packet.
@@ -119,7 +118,9 @@ class Serial(UOSInterface):
             self._device.flush()
             Log(__name__).debug("Sent %s bytes of data", num_bytes)
         except serial.SerialException as exception:
-            return ComResult(False, exception=str(exception))
+            raise UOSCommunicationError(
+                f"Executing instruction threw error '{exception}'"
+            ) from exception
         finally:
             self._device.reset_output_buffer()
         return ComResult(num_bytes == len(packet))
@@ -131,9 +132,11 @@ class Serial(UOSInterface):
         :param timeout_s: The maximum time this function will wait for data.
         :return: ComResult object.
         """
-        response_object = ComResult(False)
         if self._device is None:
-            return response_object
+            raise UOSCommunicationError(
+                "Connection must be open to read response from device."
+            )
+        response_object = ComResult(False)
         start_ns = time_ns()
         packet: list = []
         byte_index = -1  # tracks the byte position index of the current packet
@@ -168,8 +171,9 @@ class Serial(UOSInterface):
             response_object.status = True
             return response_object
         except serial.SerialException as exception:
-            response_object.exception = str(exception)
-            return response_object
+            raise UOSCommunicationError(
+                f"Reading response raised exception '{exception}'"
+            ) from exception
 
     def hard_reset(self):
         """Manually drive the DTR line low to reset the device.
@@ -177,7 +181,7 @@ class Serial(UOSInterface):
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         if self._device is None:
-            return ComResult(False, exception="Connection must be open first.")
+            raise UOSCommunicationError("Connection must be open to hard reset device.")
         Log(__name__).debug("Resetting the device using the DTR line")
         self._device.dtr = not self._device.dtr
         sleep(0.2)

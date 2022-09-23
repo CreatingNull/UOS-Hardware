@@ -55,7 +55,8 @@ def test_context_manager(uos_identities: dict):
     assert not device.is_active()
     if uos_identities["loading"] == "EAGER":
         # LAZY loading can use connection when not active as it manages it internally.
-        assert not device.reset_all_io().status
+        with pytest.raises(UOSCommunicationError):
+            device.reset_all_io()
 
 
 @pytest.mark.parametrize("function", UOSFunctions.enumerate_functions())
