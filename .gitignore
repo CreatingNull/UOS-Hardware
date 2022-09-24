@@ -31,6 +31,9 @@ src/uosinterface/webapp/static/lib/
 # Coverage database
 .coverage
 
+# Coverage output
+htmlcov/
+
 # Temp / test code
 *.scratch.py
 *.scratch.sh
