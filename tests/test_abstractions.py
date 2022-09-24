@@ -44,18 +44,17 @@ def test_read_response():
         UOSInterface.read_response(self=None, expect_packets=1, timeout_s=2)
 
 
-def test_hard_reset():
+def test_enumerate_devices():
     """Using the base class directly should throw an error."""
     with pytest.raises(UOSUnsupportedError):
-        # noinspection PyTypeChecker
-        UOSInterface.hard_reset(self=None)
+        UOSInterface.enumerate_devices()
 
 
-def test_open():
+@pytest.mark.parametrize("func", ["hard_reset", "is_active", "open", "close"])
+def test_abstract_functions(func):
     """Using the base class directly should throw an error."""
     with pytest.raises(UOSUnsupportedError):
-        # noinspection PyTypeChecker
-        UOSInterface.open(self=None)
+        getattr(UOSInterface, func)(self=None)
 
 
 def test_close():
