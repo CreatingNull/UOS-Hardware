@@ -34,7 +34,7 @@ def enumerate_system_devices(  # dead: disable
     return system_devices
 
 
-def _get_device_definition(identity: str) -> Device | None:
+def get_device_definition(identity: str) -> Device | None:
     """Look up the system config dictionary for the defined device mappings.
 
     :param identity: String containing the lookup key of the device in the dictionary.
@@ -86,7 +86,7 @@ class UOSDevice:  # dead: disable
             device = identity
         elif isinstance(identity, str):
             self.identity = identity
-            device = _get_device_definition(identity)
+            device = get_device_definition(identity)
         if device is None:
             raise UOSUnsupportedError(
                 f"'{self.identity}' does not have a valid look up table"
@@ -102,7 +102,7 @@ class UOSDevice:  # dead: disable
                 connection=address,
                 errored=(kwargs["errored"] if "errored" in kwargs else False),
             )
-        if self.__device_interface is None:
+        else:
             raise UOSUnsupportedError(
                 f"'{interface}' cannot be used for device `{self.identity}`"
             )
