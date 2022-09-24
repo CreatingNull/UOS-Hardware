@@ -7,6 +7,7 @@ repos:
     rev: v4.3.0
     hooks:
     -   id: check-yaml
+    -   id: check-toml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
     -   id: check-added-large-files
@@ -16,11 +17,19 @@ repos:
     -   id: check-case-conflict
     -   id: check-ast
 
+# Updating code to use modern python patterns where available.
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.38.0
+    hooks:
+    -   id: pyupgrade
+
+# General Project code formatter.
 -   repo: https://github.com/psf/black
     rev: 22.8.0
     hooks:
     -   id: black
 
+# Sorts python imports.
 -   repo: https://github.com/PyCQA/isort
     # Note - on black update blacken-docs pin should also be updated.
     rev: 5.10.1
@@ -28,11 +37,13 @@ repos:
     -   id: isort
         args: ['--profile=black']
 
+# Formats python docstrings.
 -   repo: https://github.com/PyCQA/docformatter
     rev: v1.5.0
     hooks:
     -   id: docformatter
 
+# Formats code-blocks in documentation.
 -   repo: https://github.com/asottile/blacken-docs
     rev: v1.12.1
     hooks:
@@ -40,6 +51,7 @@ repos:
         # Note - on black update blacken-docs pin should also be updated.
         additional_dependencies: ['black==22.8.0']
 
+# Used to detect unintentionally unused code.
 -   repo: https://github.com/asottile/dead
     rev: v1.5.0
     hooks:
@@ -48,6 +60,7 @@ repos:
             '--exclude=conf.py'  # Ignore the sphinx config as this is used by an external tool.
         ]
 
+# Lint code using libs in project venv.
 -   repo: local
     hooks:
     # Pylint is run as local hook to make use of the repo venv.
@@ -61,6 +74,7 @@ repos:
         ]
         require_serial: true
 
+# Lint code in pre-commit env, note: This ignores import checks.
 -   repo: https://github.com/PyCQA/pylint
     rev: v2.15.3
     hooks:
@@ -71,6 +85,7 @@ repos:
             '--ignore=conf.py',  # Ignore the sphinx config as this is used by an external tool.
         ]
 
+# Lint code for security flaws.
 -   repo: https://github.com/PyCQA/bandit
     rev: 1.7.4
     hooks:
@@ -78,18 +93,21 @@ repos:
         # Assert is used exclusively in pytest.
         args: ['--skip=B101']
 
+# Lint documentation source.
 -   repo: https://github.com/sphinx-contrib/sphinx-lint
     # Make sure to also update the additional dependency pin
     rev: v0.6.1
     hooks:
     -   id: sphinx-lint
 
+# Lint docstrings.
 -   repo: https://github.com/PyCQA/pydocstyle
     # Waiting for a 3.10 release on pypi
     rev: "6.1.1"
     hooks:
     -   id: pydocstyle
 
+# Static typehint linting.
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.971
     hooks:
