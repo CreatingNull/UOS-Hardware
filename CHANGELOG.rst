@@ -1,7 +1,7 @@
 Version 0.3.0
 -------------
 
-:Date: TBC
+:Date: 25-September-2022
 
 * Allowing the UOSDevice interface to be used as a context manager.
 * Adding an is_active function to UOSDevice as a method to indicate if a connection is held open with the device.
