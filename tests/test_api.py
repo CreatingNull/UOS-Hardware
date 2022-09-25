@@ -3,7 +3,7 @@ from inspect import signature
 
 import pytest
 
-from uoshardware import Persistence, UOSCommunicationError, UOSUnsupportedError
+from uoshardware import Loading, Persistence, UOSCommunicationError, UOSUnsupportedError
 from uoshardware.abstractions import Device, UOSFunction, UOSFunctions, UOSInterface
 from uoshardware.api import UOSDevice, enumerate_system_devices, get_device_definition
 from uoshardware.devices import Devices
@@ -55,7 +55,7 @@ def test_bad_connection(uos_identities: dict, interface: Interface):
             interface=interface,
             loading=uos_identities["loading"],
         )
-        if device.is_lazy():  # lazy connection so manually open
+        if device.loading == Loading.LAZY:  # lazy connection so manually open
             device.open()
 
 

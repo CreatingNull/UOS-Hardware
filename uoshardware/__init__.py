@@ -20,6 +20,13 @@ class Persistence(Enum):
     EEPROM = 2  # dead: disable
 
 
+class Loading(Enum):
+    """Set the management strategy for handling the devices connection."""
+
+    LAZY = 0
+    EAGER = 1
+
+
 # Dead code false positive as interface intended to be used by client.
 def configure_logs(name: str, level: int, base_path: Path):  # dead: disable
     """Per-package logs must be manually configured to prefix correctly."""

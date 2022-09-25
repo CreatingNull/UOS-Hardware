@@ -1,6 +1,7 @@
 """Module for package test configuration, scope=session."""
 import pytest
 
+from uoshardware import Loading
 from uoshardware.api import UOSDevice
 from uoshardware.devices import Devices
 from uoshardware.interface import Interface
@@ -10,13 +11,13 @@ DEVICES = {
         "identity": Devices.arduino_nano,
         "address": "/dev/ttyUSB0",
         "interface": Interface.STUB,
-        "loading": "LAZY",
+        "loading": Loading.LAZY,
     },
     "Arduino Nano 3 EAGER": {
         "identity": Devices.arduino_nano,
         "address": "/dev/ttyUSB0",
         "interface": Interface.STUB,
-        "loading": "EAGER",
+        "loading": Loading.EAGER,
     },
 }
 

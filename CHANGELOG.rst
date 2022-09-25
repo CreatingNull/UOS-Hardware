@@ -7,6 +7,8 @@ Version 0.3.0
 * Adding an is_active function to UOSDevice as a method to indicate if a connection is held open with the device.
 * Refactored devices lookup to use importable constant names rather than a dictionary.
 * Removing use of success booleans in low level interface packages / abstractions in preference of more descriptive errors.
+* Refactored loading type to be a defined keyword argument that uses a enum value rather than an ambiguous string.
+  This removes the is_lazy function as this information should be directly taken from the `UOSDevice.loading` class variable.
 * Fixed a bug where using LAZY loading without a context manager could cause connection lockups.
 * Fixed a bug where pylint was incorrectly defined as a project dep rather than a dev dep.
 

@@ -1,7 +1,7 @@
 """Provides the HAL layer for communicating with the hardware."""
 from logging import getLogger as Log
 
-from uoshardware import Persistence, UOSUnsupportedError
+from uoshardware import Loading, Persistence, UOSUnsupportedError
 from uoshardware.abstractions import (
     ComResult,
     Device,
@@ -62,6 +62,7 @@ class UOSDevice:  # dead: disable
     identity = ""
     address = ""
     __device_interface: UOSInterface
+    loading: Loading
     __kwargs: dict = {}
 
     def __init__(
@@ -69,6 +70,7 @@ class UOSDevice:  # dead: disable
         identity: str | Device,
         address: str,
         interface: Interface = Interface.SERIAL,
+        loading: Loading = Loading.EAGER,
         **kwargs,
     ):
         """Instantiate a UOS device instance for communication.
@@ -76,10 +78,12 @@ class UOSDevice:  # dead: disable
         :param identity: Specify the type of device, this must exist in the device LUT.
         :param address: Compliant connection string for identifying the device and interface.
         :param interface: Set the type of interface to use for communication.
+        loading: Alter the loading strategy for managing the communication.
         :param kwargs: Additional optional connection parameters as defined in documentation.
         """
         self.address = address
         self.__kwargs = kwargs
+        self.loading = loading
         device = None
         if isinstance(identity, Device):
             self.identity = identity.name
@@ -106,7 +110,9 @@ class UOSDevice:  # dead: disable
             raise UOSUnsupportedError(
                 f"'{interface}' cannot be used for device `{self.identity}`"
             )
-        if not self.is_lazy():  # eager connections open when they are created
+        if (
+            self.loading == Loading.EAGER
+        ):  # eager connections open when they are created
             self.open()
         Log(__name__).debug("Created device %s", self.__device_interface.__repr__())
 
@@ -267,7 +273,7 @@ class UOSDevice:  # dead: disable
             )
         rx_response = ComResult(False)
         try:
-            if self.is_lazy():  # Lazy loaded
+            if self.loading == Loading.LAZY:  # Lazy loaded
                 self.open()
             if function.address_lut[instruction_data.volatility] >= 0:
                 # a normal instruction
@@ -304,22 +310,13 @@ class UOSDevice:  # dead: disable
             else:  # run a special action
                 rx_response = getattr(self.__device_interface, function.name)()
         finally:  # Safety check for lazy loading being used outside of context manager
-            if self.is_lazy():  # Lazy loaded
+            if self.loading == Loading.LAZY:  # Lazy loaded
                 self.close()
         if (
             not rx_response.status and retry
         ):  # allow one retry per instruction due to DTR resets
             return self.__execute_instruction(function, instruction_data, False)
         return rx_response
-
-    def is_lazy(self) -> bool:
-        """Check the loading type of the device lazy or eager.
-
-        :return: Boolean, true is lazy.
-        """
-        if "loading" not in self.__kwargs or self.__kwargs["loading"].upper() == "LAZY":
-            return True
-        return False
 
     def is_active(self) -> bool:
         """Check if a connection is being held active to the device.
