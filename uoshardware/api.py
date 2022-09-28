@@ -171,7 +171,7 @@ class UOSDevice:  # dead: disable
     ) -> ComResult:
         """Read the current 10 bit ADC value.
 
-        :param pin: The index of the analogue pin to read
+        :param pin: The index of the analog pin to read
         :param volatility: How volatile should the command be, use constants from uoshardware.
         :return: ComResult object containing the ADC readings.
         """

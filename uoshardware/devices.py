@@ -77,32 +77,24 @@ _ARDUINO_NANO_3 = Device(
             pc_int=True,
             i2c={"type": "sck", "bus": 0},
         ),
-        14: Pin(
-            gpio_out=True, gpio_in=True, pull_up=True, pc_int=True
-        ),  # analogue pin 0
-        15: Pin(
-            gpio_out=True, gpio_in=True, pull_up=True, pc_int=True
-        ),  # analogue pin 1
-        16: Pin(
-            gpio_out=True, gpio_in=True, pull_up=True, pc_int=True
-        ),  # analogue pin 2
-        17: Pin(
-            gpio_out=True, gpio_in=True, pull_up=True, pc_int=True
-        ),  # analogue pin 3
+        14: Pin(gpio_out=True, gpio_in=True, pull_up=True, pc_int=True),  # analog pin 0
+        15: Pin(gpio_out=True, gpio_in=True, pull_up=True, pc_int=True),  # analog pin 1
+        16: Pin(gpio_out=True, gpio_in=True, pull_up=True, pc_int=True),  # analog pin 2
+        17: Pin(gpio_out=True, gpio_in=True, pull_up=True, pc_int=True),  # analog pin 3
         18: Pin(
             gpio_out=True,
             gpio_in=True,
             pull_up=True,
             pc_int=True,
             i2c={"type": "sda", "bus": 0},
-        ),  # analogue pin 4
+        ),  # analog pin 4
         19: Pin(
             gpio_out=True,
             gpio_in=True,
             pull_up=True,
             pc_int=True,
             i2c={"type": "scl", "bus": 0},
-        ),  # analogue pin 5
+        ),  # analog pin 5
     },
     analogue_pins={
         0: Pin(adc_in=True),
