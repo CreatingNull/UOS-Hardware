@@ -3,7 +3,7 @@ Version 0.4.0
 
 :Date: TBC
 
-* TBC
+* Adding gpio_input case for testing lookup of compatible pins.
 
 Version 0.3.0
 -------------

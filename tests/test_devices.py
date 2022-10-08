@@ -13,7 +13,11 @@ def test_get_compatible_pins(uos_device: UOSDevice):
     :return:
     """
     # Check lookup of digital / analog pins works.
-    for function in (UOSFunctions.set_gpio_output, UOSFunctions.get_adc_input):
+    for function in (
+        UOSFunctions.set_gpio_output,
+        UOSFunctions.get_gpio_input,
+        UOSFunctions.get_adc_input,
+    ):
         if function.name in uos_device.device.functions_enabled:
             pins = uos_device.device.get_compatible_pins(function)
             assert len(pins) > 0
