@@ -6,7 +6,7 @@ from functools import lru_cache
 from uoshardware import Persistence, UOSUnsupportedError
 
 
-@dataclass
+@dataclass(frozen=True)
 class UOSFunction:
     """Defines auxiliary information for UOS commands in the schema."""
 
@@ -220,7 +220,7 @@ class UOSInterface(metaclass=ABCMeta):
         return ((lrc ^ 0xFF) + 1) & 0xFF
 
 
-@dataclass
+@dataclass(frozen=True)
 class Pin:
     """Defines supported features of the pin."""
 
@@ -242,7 +242,7 @@ class Pin:
     i2c: dict = field(default_factory=dict)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Device:
     """Define an implemented UOS device dictionary."""
 

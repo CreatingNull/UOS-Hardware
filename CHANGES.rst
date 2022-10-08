@@ -4,6 +4,8 @@ Version 0.4.0
 :Date: TBC
 
 * Adding gpio_input case for testing lookup of compatible pins.
+* Setting ``frozen=True`` for static abstraction dataclasses, this is for hash-ability.
+  This change was required for 3.11 support due to the `dataclass changes <https://github.com/python/cpython/issues/88840>`_.
 
 Version 0.3.0
 -------------
@@ -15,7 +17,7 @@ Version 0.3.0
 * Refactored devices lookup to use importable constant names rather than a dictionary.
 * Removing use of success booleans in low level interface packages / abstractions in preference of more descriptive errors.
 * Refactored loading type to be a defined keyword argument that uses a enum value rather than an ambiguous string.
-  This removes the is_lazy function as this information should be directly taken from the `UOSDevice.loading` class variable.
+  This removes the is_lazy function as this information should be directly taken from the ``UOSDevice.loading`` class variable.
 * Fixed a bug where using LAZY loading without a context manager could cause connection lockups.
 * Fixed a bug where pylint was incorrectly defined as a project dep rather than a dev dep.
 
