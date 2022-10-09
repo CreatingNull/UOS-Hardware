@@ -96,9 +96,15 @@ repos:
 # Lint documentation source.
 -   repo: https://github.com/sphinx-contrib/sphinx-lint
     # Make sure to also update the additional dependency pin
-    rev: v0.6.1
+    rev: v0.6.6
     hooks:
     -   id: sphinx-lint
+
+# lint documentation
+-   repo: https://github.com/PyCQA/doc8
+    rev: v1.0.0
+    hooks:
+    -   id: doc8
 
 # Lint docstrings.
 -   repo: https://github.com/PyCQA/pydocstyle

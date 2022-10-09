@@ -4,8 +4,10 @@ Version 0.4.0
 :Date: TBC
 
 * Adding gpio_input case for testing lookup of compatible pins.
-* Setting ``frozen=True`` for static abstraction dataclasses, this is for hash-ability.
-  This change was required for 3.11 support due to the `dataclass changes <https://github.com/python/cpython/issues/88840>`_.
+* Setting ``frozen=True`` for static abstraction dataclasses,
+  this is for hash-ability. This change was required for 3.11
+  support due to the
+  `dataclass changes <https://github.com/python/cpython/issues/88840>`_.
 
 Version 0.3.0
 -------------
@@ -13,29 +15,38 @@ Version 0.3.0
 :Date: 25-September-2022
 
 * Allowing the UOSDevice interface to be used as a context manager.
-* Adding an is_active function to UOSDevice as a method to indicate if a connection is held open with the device.
-* Refactored devices lookup to use importable constant names rather than a dictionary.
-* Removing use of success booleans in low level interface packages / abstractions in preference of more descriptive errors.
-* Refactored loading type to be a defined keyword argument that uses a enum value rather than an ambiguous string.
-  This removes the is_lazy function as this information should be directly taken from the ``UOSDevice.loading`` class variable.
-* Fixed a bug where using LAZY loading without a context manager could cause connection lockups.
-* Fixed a bug where pylint was incorrectly defined as a project dep rather than a dev dep.
+* Adding an is_active function to UOSDevice as a method to indicate
+  if a connection is held open with the device.
+* Refactored devices lookup to use importable constant names rather
+  than a dictionary.
+* Removing use of success booleans in low level interface packages
+  / abstractions in preference of more descriptive errors.
+* Refactored loading type to be a defined keyword argument that
+  uses a enum value rather than an ambiguous string. This removes
+  the is_lazy function as this information should be directly taken
+  from the ``UOSDevice.loading`` class variable.
+* Fixed a bug where using LAZY loading without a context manager could
+  cause connection lockups.
+* Fixed a bug where pylint was incorrectly defined as a project dep
+  rather than a dev dep.
 
 Version 0.2.1
 -------------
 
 :Date: 18-September-2022
 
-* Fixing a bug with the serial backend where DTR reset workaround on linux platforms.
-  Opening the serial connection was defining encoding as binary rather than the mode.
+* Fixing a bug with the serial backend where DTR reset workaround on
+  linux platforms. Opening the serial connection was defining encoding
+  as binary rather than the mode.
 
 Version 0.2.0
 -------------
 
 :Date: 18-September-2022
 
-* Major refactoring to device handling and top-level UOS schema definitions.
-  This is to improve OOP consistency across the project and reduce reliance on string name lookup.
+* Major refactoring to device handling and top-level UOS schema
+  definitions. This is to improve OOP consistency across the project
+  and reduce reliance on string name lookup.
 * Drop support for python 3.9 in preference of clean typing.
 
 Version 0.1.1
