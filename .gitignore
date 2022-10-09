@@ -38,6 +38,9 @@ htmlcov/
 *.scratch.py
 *.scratch.sh
 
+# Ignore .tox env files.
+.tox/
+
 # Ignore dev virtual enviroment
 .env
 .venv
