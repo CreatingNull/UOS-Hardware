@@ -112,6 +112,9 @@ repos:
     rev: "6.1.1"
     hooks:
     -   id: pydocstyle
+        additional_dependencies:
+            # TOML support only added natively in python 3.11
+            - toml
 
 # Static typehint linting.
 -   repo: https://github.com/pre-commit/mirrors-mypy
