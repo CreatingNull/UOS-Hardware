@@ -247,7 +247,6 @@ class Device:
     """Define an implemented UOS device dictionary."""
 
     name: str
-    versions: dict
     interfaces: list
     functions_enabled: dict
     digital_pins: dict = field(default_factory=dict)

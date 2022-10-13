@@ -8,6 +8,9 @@ Version 0.4.0
   this is for hash-ability. This change was required for 3.11
   support due to the
   `dataclass changes <https://github.com/python/cpython/issues/88840>`_.
+* Device definitions are shifted into private modules within a
+  devices packages. The intended API avoids having to be aware of this
+  complexity.
 
 Version 0.3.0
 -------------

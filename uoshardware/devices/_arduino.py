@@ -1,13 +1,10 @@
-"""Module defining supported hardware definitions."""
-from dataclasses import dataclass
-
+"""Module contains definitions for arduino devices."""
 from uoshardware import Persistence
 from uoshardware.abstractions import Device, Pin, UOSFunctions
 from uoshardware.interface import Interface
 
 _ARDUINO_NANO_3 = Device(
     name="Arduino Nano 3",
-    versions={},
     interfaces=[Interface.STUB, Interface.SERIAL],
     functions_enabled={
         UOSFunctions.set_gpio_output.name: [Persistence.NONE],
@@ -109,18 +106,3 @@ _ARDUINO_NANO_3 = Device(
     },
     aux_params={"default_baudrate": 115200},
 )
-
-
-@dataclass(init=False, repr=False, frozen=True)
-class Devices:
-    """Names for supported hardware linking to the Device object used.
-
-    :cvar hwid_0: device: _ARDUINO_NANO_3
-    :cvar arduino_nano: device: _ARDUINO_NANO_3
-    :cvar arduino_uno: device: _ARDUINO_NANO_3
-    """
-
-    # Lookup constants linking devices to importable names
-    hwid_0: Device = _ARDUINO_NANO_3
-    arduino_nano: Device = _ARDUINO_NANO_3
-    arduino_uno: Device = _ARDUINO_NANO_3
