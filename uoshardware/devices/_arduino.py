@@ -102,7 +102,6 @@ _ARDUINO_NANO_3 = Device(
         5: Pin(adc_in=True),
         6: Pin(adc_in=True),
         7: Pin(adc_in=True),
-        8: Pin(adc_in=True),
     },
     aux_params={"default_baudrate": 115200},
 )

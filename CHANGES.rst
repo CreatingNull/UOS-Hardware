@@ -11,6 +11,8 @@ Version 0.4.0
 * Device definitions are shifted into private modules within a
   devices packages. The intended API avoids having to be aware of this
   complexity.
+* Correcting a mistake in the arduino_nano device definition.
+  This had 9x pins defined where only 8x exist on this device.
 
 Version 0.3.0
 -------------
