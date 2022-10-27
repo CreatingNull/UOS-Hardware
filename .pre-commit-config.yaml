@@ -76,7 +76,7 @@ repos:
 
 # Lint code in pre-commit env, note: This ignores import checks.
 -   repo: https://github.com/PyCQA/pylint
-    rev: v2.15.4
+    rev: v2.15.5
     hooks:
     # Pylint is also run from within pre-commit for CI purposes.
     -   id: pylint
@@ -96,7 +96,7 @@ repos:
 # Lint documentation source.
 -   repo: https://github.com/sphinx-contrib/sphinx-lint
     # Make sure to also update the additional dependency pin
-    rev: v0.6.6
+    rev: v0.6.7
     hooks:
     -   id: sphinx-lint
 
