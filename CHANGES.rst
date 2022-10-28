@@ -15,6 +15,9 @@ Version 0.4.0
   This had 9x pins defined where only 8x exist on this device.
 * Redesigning the analog and digital pins to define aliases where
   they physically are the same pin.
+* Removing interrupt and bus information from Pin definitions as
+  this wasn't implemented and likely would need a redesign if it was
+  added.
 
 Version 0.3.0
 -------------

@@ -234,12 +234,6 @@ class Pin:
     adc_in: bool = False
     pull_up: bool = False
     pull_down: bool = False
-    pc_int: bool = False
-    hw_int: bool = False
-    timer: dict = field(default_factory=dict)
-    comp: dict = field(default_factory=dict)
-    spi: dict = field(default_factory=dict)
-    i2c: dict = field(default_factory=dict)
     alias: int | None = None
 
 
