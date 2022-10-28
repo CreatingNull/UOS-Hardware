@@ -18,6 +18,9 @@ Version 0.4.0
 * Removing interrupt and bus information from Pin definitions as
   this wasn't implemented and likely would need a redesign if it was
   added.
+* Defining the arduino uno as a separate device to the nano.
+  Functionally these are equivalent besides the fewer ADC inputs
+  on the uno.
 
 Version 0.3.0
 -------------

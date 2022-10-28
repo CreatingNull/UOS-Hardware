@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 
 from uoshardware.abstractions import Device
-from uoshardware.devices._arduino import _ARDUINO_NANO_3
+from uoshardware.devices._arduino import _ARDUINO_NANO_3, _ARDUINO_UNO_3
 
 
 @dataclass(init=False, repr=False, frozen=True)
@@ -17,4 +17,5 @@ class Devices:
     # Lookup constants linking devices to importable names
     hwid_0: Device = _ARDUINO_NANO_3
     arduino_nano: Device = _ARDUINO_NANO_3
-    arduino_uno: Device = _ARDUINO_NANO_3
+    hwid_1: Device = _ARDUINO_UNO_3
+    arduino_uno: Device = _ARDUINO_UNO_3

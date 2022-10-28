@@ -89,3 +89,21 @@ _ARDUINO_NANO_3 = Device(
     },
     aux_params={"default_baudrate": 115200},
 )
+
+
+_ARDUINO_UNO_3 = Device(
+    name="Arduino Uno 3",
+    interfaces=_ARDUINO_NANO_3.interfaces,
+    functions_enabled=_ARDUINO_NANO_3.functions_enabled,
+    digital_pins=_ARDUINO_NANO_3.digital_pins,
+    analog_pins={
+        0: Pin(adc_in=True, alias=14),
+        1: Pin(adc_in=True, alias=15),
+        2: Pin(adc_in=True, alias=16),
+        3: Pin(adc_in=True, alias=17),
+        4: Pin(adc_in=True, alias=18),
+        5: Pin(adc_in=True, alias=19),
+        # Uno has 2 less ADCs pins than the nano.
+    },
+    aux_params={"default_baudrate": 115200},
+)

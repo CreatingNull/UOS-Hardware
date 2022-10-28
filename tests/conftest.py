@@ -13,8 +13,8 @@ DEVICES = {
         "interface": Interface.STUB,
         "loading": Loading.LAZY,
     },
-    "Arduino Nano 3 EAGER": {
-        "identity": Devices.arduino_nano,
+    "Arduino Uno 3 EAGER": {
+        "identity": Devices.arduino_uno,
         "address": "/dev/ttyUSB0",
         "interface": Interface.STUB,
         "loading": Loading.EAGER,
