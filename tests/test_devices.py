@@ -7,11 +7,7 @@ from uoshardware.api import UOSDevice
 
 
 def test_get_compatible_pins(uos_device: UOSDevice):
-    """Checks the device function for returning lists of compatible pins.
-
-    :param uos_device:
-    :return:
-    """
+    """Checks the device function for returning lists of compatible pins."""
     # Check lookup of digital / analog pins works.
     for function in (
         UOSFunctions.set_gpio_output,
@@ -35,3 +31,20 @@ def test_get_compatible_pins(uos_device: UOSDevice):
         uos_device.device.get_compatible_pins(
             UOSFunction(name="bad_function", address_lut={}, ack=False)
         )
+
+
+def test_pin_aliases(uos_device: UOSDevice):
+    """Makes sure all aliases are defined bidirectionally."""
+    # Check digital pins have valid analog aliases and vice-versa.
+    for pin_mapping in (
+        (uos_device.device.digital_pins, uos_device.device.analog_pins),
+        (uos_device.device.analog_pins, uos_device.device.digital_pins),
+    ):
+        for pin_number in pin_mapping[0]:
+            pin = pin_mapping[0][pin_number]
+            if pin.alias is not None:
+                assert isinstance(pin.alias, int)
+                assert pin.alias in pin_mapping[1]
+                alias = pin_mapping[1][pin.alias]
+                assert alias.alias is not None
+                assert alias.alias == pin_number

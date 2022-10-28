@@ -13,6 +13,8 @@ Version 0.4.0
   complexity.
 * Correcting a mistake in the arduino_nano device definition.
   This had 9x pins defined where only 8x exist on this device.
+* Redesigning the analog and digital pins to define aliases where
+  they physically are the same pin.
 
 Version 0.3.0
 -------------

@@ -240,6 +240,7 @@ class Pin:
     comp: dict = field(default_factory=dict)
     spi: dict = field(default_factory=dict)
     i2c: dict = field(default_factory=dict)
+    alias: int | None = None
 
 
 @dataclass(frozen=True)
@@ -250,7 +251,7 @@ class Device:
     interfaces: list
     functions_enabled: dict
     digital_pins: dict = field(default_factory=dict)
-    analogue_pins: dict = field(default_factory=dict)
+    analog_pins: dict = field(default_factory=dict)
     aux_params: dict = field(default_factory=dict)
 
     def get_compatible_pins(self, function: UOSFunction) -> dict:
@@ -267,7 +268,7 @@ class Device:
         requirements = function.pin_requirements
         if requirements is None:  # pins are not relevant to this function
             return {}
-        pin_dict = self.analogue_pins if "adc_in" in requirements else self.digital_pins
+        pin_dict = self.analog_pins if "adc_in" in requirements else self.digital_pins
         return {
             pin_name: pin
             for pin_name, pin in pin_dict.items()
