@@ -1,7 +1,7 @@
 Version 0.4.0
 -------------
 
-:Date: TBC
+:Date: 30-October-2022
 
 * Adding gpio_input case for testing lookup of compatible pins.
 * Setting ``frozen=True`` for static abstraction dataclasses,
