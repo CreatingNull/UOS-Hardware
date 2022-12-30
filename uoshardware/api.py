@@ -18,7 +18,7 @@ from uoshardware.interface.stub import Stub
 
 # This is an interface for client implementations dead code false positive.
 def enumerate_system_devices(  # dead: disable
-    interface_filter: Interface = None,
+    interface_filter: Interface | None = None,
 ) -> list:
     """Iterate through all interfaces and locates available devices.
 

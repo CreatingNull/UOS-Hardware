@@ -23,13 +23,19 @@ class UOSFunctions:
 
     set_gpio_output = UOSFunction(
         name="set_gpio_output",
-        address_lut={Persistence.NONE: 64},
+        address_lut={
+            Persistence.NONE: 60,
+            Persistence.RAM: 70,
+        },
         ack=True,
         pin_requirements=["gpio_out"],
     )
     get_gpio_input = UOSFunction(
         name="get_gpio_input",
-        address_lut={Persistence.NONE: 64},
+        address_lut={
+            Persistence.NONE: 61,
+            Persistence.RAM: 71,
+        },
         ack=True,
         rx_packets_expected=[1],
         pin_requirements=["gpio_in"],
@@ -42,7 +48,7 @@ class UOSFunctions:
         pin_requirements=["adc_in"],
     )
     reset_all_io = UOSFunction(
-        name="reset_all_io", address_lut={Persistence.NONE: 68}, ack=True
+        name="reset_all_io", address_lut={Persistence.NONE: 245}, ack=True
     )
     hard_reset = UOSFunction(
         name="hard_reset", address_lut={Persistence.NONE: -1}, ack=False

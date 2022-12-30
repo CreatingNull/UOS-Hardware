@@ -16,7 +16,7 @@ class Persistence(Enum):
     """Volatility levels that can be used in UOS instructions."""
 
     NONE = 0
-    RAM = 1  # dead: disable
+    RAM = 1
     EEPROM = 2  # dead: disable
 
 
