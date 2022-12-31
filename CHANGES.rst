@@ -5,6 +5,11 @@ Version 0.5.0
 
 * BREAKING! Remaps address for redesign of UOS protocol.
 * PEP 484 implicit optional typing fixes.
+* Redesigned the logging to be more suitable for a library.
+  A global logger is configured at the top level and used throughout
+  the project.
+  The logger has a NullHandler so is suppressed unless the client enables.
+  Removed configure_logs function as this was no longer functional.
 
 Version 0.4.0
 -------------

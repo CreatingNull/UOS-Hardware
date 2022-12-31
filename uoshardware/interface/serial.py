@@ -1,13 +1,12 @@
 """Module defining the low level UOSImplementation for serial port devices."""
 import platform
-from logging import getLogger as Log
 from time import sleep, time_ns
 
 import serial
 from serial.serialutil import SerialException
 from serial.tools import list_ports
 
-from uoshardware import UOSCommunicationError
+from uoshardware import UOSCommunicationError, logger
 from uoshardware.abstractions import ComResult, UOSInterface
 
 if platform.system() == "Linux":
@@ -38,25 +37,23 @@ class Serial(UOSInterface):
         self._port = self.check_port_exists(connection)
         self._kwargs = kwargs
         if self._port is None:
-            Log(__name__).error("%s port does not exist", connection)
+            logger.error("%s port does not exist", connection)
         else:
-            Log(__name__).debug("%s located", self._port)
+            logger.debug("%s located", self._port)
 
     def open(self):
         """Open a connection to the port and creates the device object."""
         try:
             self._port = self.check_port_exists(self._connection)
             if self._port is None:
-                Log(__name__).error(
-                    "%s device was not present to open", self._connection
-                )
+                logger.error("%s device was not present to open", self._connection)
                 raise UOSCommunicationError("Device could not be found on system.")
             self._device = serial.Serial()
             self._device.port = self._connection
             if "baudrate" in self._kwargs:
                 self._device.baudrate = self._kwargs["baudrate"]
             if platform.system() == "Linux":  # DTR transient workaround for Unix
-                Log(__name__).debug("Linux platform found so using DTR workaround")
+                logger.debug("Linux platform found so using DTR workaround")
                 with open(self._connection, mode="rb") as port:
                     attrs = termios.tcgetattr(port)
                     attrs[2] = attrs[2] & ~termios.HUPCL
@@ -64,10 +61,10 @@ class Serial(UOSInterface):
             else:  # DTR transient workaround for Windows
                 self._device.dtr = False
             self._device.open()
-            Log(__name__).debug("%s opened successfully", self._port.device)
+            logger.debug("%s opened successfully", self._port.device)
             return
         except (SerialException, FileNotFoundError) as exception:
-            Log(__name__).error(
+            logger.error(
                 "Opening %s threw error %s",
                 self._port.device if self._port is not None else "None",
                 str(exception),
@@ -75,7 +72,7 @@ class Serial(UOSInterface):
             if (
                 exception.errno == 13
             ):  # permission denied another connection open to this device.
-                Log(__name__).error(
+                logger.error(
                     "Cannot open connection, account has insufficient permissions."
                 )
                 raise UOSCommunicationError(
@@ -92,11 +89,11 @@ class Serial(UOSInterface):
         try:
             self._device.close()
         except SerialException as exception:
-            Log(__name__).debug("Closing the connection threw error %s", str(exception))
+            logger.debug("Closing the connection threw error %s", str(exception))
             raise UOSCommunicationError(
                 f"Closing connection threw error '{exception}'."
             ) from exception
-        Log(__name__).debug("Connection closed successfully")
+        logger.debug("Connection closed successfully")
         self._device = None
 
     # Kwargs is defined in the abstractmethod definition, false positive.
@@ -112,11 +109,11 @@ class Serial(UOSInterface):
                 "Connection must be open to execute instructions."
             )
         packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
-        Log(__name__).debug("packet formed %s", packet)
+        logger.debug("packet formed %s", packet)
         try:  # Send the packet.
             num_bytes = self._device.write(packet)
             self._device.flush()
-            Log(__name__).debug("Sent %s bytes of data", num_bytes)
+            logger.debug("Sent %s bytes of data", num_bytes)
         except serial.SerialException as exception:
             raise UOSCommunicationError(
                 f"Executing instruction threw error '{exception}'"
@@ -163,7 +160,7 @@ class Serial(UOSInterface):
                         packet = []
                     byte_index += 1
                 sleep(0.05)  # Don't churn CPU cycles waiting for data
-            Log(__name__).debug("Packet received %s", packet)
+            logger.debug("Packet received %s", packet)
             if expect_packets != packet_index or len(packet) < 6 or byte_index != -2:
                 response_object.rx_packets.append(packet)
                 response_object.exception = "did not receive all the expected data"
@@ -182,7 +179,7 @@ class Serial(UOSInterface):
         """
         if self._device is None:
             raise UOSCommunicationError("Connection must be open to hard reset device.")
-        Log(__name__).debug("Resetting the device using the DTR line")
+        logger.debug("Resetting the device using the DTR line")
         self._device.dtr = not self._device.dtr
         sleep(0.2)
         self._device.dtr = not self._device.dtr
@@ -217,7 +214,7 @@ class Serial(UOSInterface):
             if byte_in == b">":
                 byte_index += 1
         if byte_index >= 0:
-            Log(__name__).debug(
+            logger.debug(
                 "read %s byte index = %s",
                 byte_in,
                 byte_index,
@@ -226,7 +223,7 @@ class Serial(UOSInterface):
             if byte_index == 3 + 2 + payload_len:  # End packet symbol
                 if byte_in == b"<":
                     byte_index = -2  # packet complete
-                    Log(__name__).debug("Found end packet symbol")
+                    logger.debug("Found end packet symbol")
                 else:  # Errored data
                     byte_index = -1
                     packet = []

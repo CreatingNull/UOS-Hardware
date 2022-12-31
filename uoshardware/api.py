@@ -1,7 +1,5 @@
 """Provides the HAL layer for communicating with the hardware."""
-from logging import getLogger as Log
-
-from uoshardware import Loading, Persistence, UOSUnsupportedError
+from uoshardware import Loading, Persistence, UOSUnsupportedError, logger
 from uoshardware.abstractions import (
     ComResult,
     Device,
@@ -114,7 +112,7 @@ class UOSDevice:  # dead: disable
             self.loading == Loading.EAGER
         ):  # eager connections open when they are created
             self.open()
-        Log(__name__).debug("Created device %s", self.__device_interface.__repr__())
+        logger.debug("Created device %s", self.__device_interface.__repr__())
 
     def __enter__(self):
         """Dunder function for opening the interface as a context manager."""
@@ -264,7 +262,7 @@ class UOSDevice:  # dead: disable
             or instruction_data.volatility
             not in self.device.functions_enabled[function.name]
         ):
-            Log(__name__).debug(
+            logger.debug(
                 "Known functions %s", str(self.device.functions_enabled.keys())
             )
             raise UOSUnsupportedError(
@@ -299,7 +297,7 @@ class UOSDevice:  # dead: disable
                                     current_packet[1:-2]
                                 )
                             )
-                            Log(__name__).debug(
+                            logger.debug(
                                 "Calculated checksum %s must match rx %s",
                                 computed_checksum,
                                 current_packet[-2],

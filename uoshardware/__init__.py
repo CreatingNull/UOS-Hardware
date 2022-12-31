@@ -1,7 +1,6 @@
 """The high level interface for communicating with UOS devices."""
+import logging
 from enum import Enum
-from logging import FileHandler, Formatter, getLogger
-from pathlib import Path
 
 __author__ = "Steve Richardson (Creating Null)"
 __copyright__ = f"2023, {__author__}"
@@ -27,23 +26,6 @@ class Loading(Enum):
     EAGER = 1
 
 
-# Dead code false positive as interface intended to be used by client.
-def configure_logs(name: str, level: int, base_path: Path):  # dead: disable
-    """Per-package logs must be manually configured to prefix correctly."""
-    logger = getLogger(name)
-    logger.setLevel(level)
-    # Don't capture to console as custom messages only, root logger captures stderr
-    logger.propagate = False
-    log_dir = Path(base_path.joinpath(Path("logs/")))
-    if not log_dir.exists():
-        log_dir.mkdir()
-    file_handler = FileHandler(log_dir.joinpath(Path(name + ".log")))
-    file_handler.setFormatter(
-        Formatter("%(asctime)s : %(levelname)s : %(name)s : %(message)s")
-    )
-    logger.addHandler(file_handler)
-
-
 class UOSError(Exception):
     """Base class exception for all UOS Interface Errors."""
 
@@ -54,3 +36,9 @@ class UOSUnsupportedError(UOSError):
 
 class UOSCommunicationError(UOSError):
     """Exception while communicating with a UOS Device."""
+
+
+# Configures the global logger for the library
+# Note: Clients need to initialize logging otherwise no output will be visible.
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
