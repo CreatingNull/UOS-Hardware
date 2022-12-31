@@ -4,6 +4,7 @@ Version 0.5.0
 :Date: TBC
 
 * BREAKING! Remaps address for redesign of UOS protocol.
+  Restructured GPIO packets to suit the redesign.
 * PEP 484 implicit optional typing fixes.
 * Redesigned the logging to be more suitable for a library.
   A global logger is configured at the top level and used throughout
