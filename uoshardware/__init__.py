@@ -4,7 +4,7 @@ from logging import FileHandler, Formatter, getLogger
 from pathlib import Path
 
 __author__ = "Steve Richardson (Creating Null)"
-__copywright__ = f"2022, {__author__}"
+__copywright__ = f"2023, {__author__}"
 # Semantic Versioning, MAJOR.MINOR.PATCH[-'pre-release-type'.'num']
 __version__ = "0.4.0"
 # Dead code false positive as this constant is for use outside primary project.

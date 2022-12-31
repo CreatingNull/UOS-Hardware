@@ -1,7 +1,7 @@
 Version 0.5.0
 -------------
 
-:Date: 31-December-2022
+:Date: TBC
 
 * BREAKING! Remaps address for redesign of UOS protocol.
 * PEP 484 implicit optional typing fixes.
