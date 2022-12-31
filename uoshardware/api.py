@@ -136,7 +136,7 @@ class UOSDevice:  # dead: disable
         return self.__execute_instruction(
             UOSFunctions.set_gpio_output,
             InstructionArguments(
-                payload=(pin, 0, level),
+                payload=(pin, level),
                 check_pin=pin,
                 volatility=volatility,
             ),
@@ -155,7 +155,7 @@ class UOSDevice:  # dead: disable
         return self.__execute_instruction(
             UOSFunctions.get_gpio_input,
             InstructionArguments(
-                payload=(pin, 1, level),
+                payload=(pin, level),
                 expected_rx_packets=2,
                 check_pin=pin,
                 volatility=volatility,
