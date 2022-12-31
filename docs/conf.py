@@ -12,11 +12,11 @@ from re import Match, match
 
 sys.path.insert(0, os.path.abspath("../"))
 
-from uoshardware import PROJECT, __author__, __copywright__, __version__  # noqa: E402
+from uoshardware import PROJECT, __author__, __copyright__, __version__
 
 project = PROJECT
 # Copyright name shadowed by sphinx design.
-copyright = __copywright__  # noqa
+copyright = __copyright__
 author = __author__
 # The short MAJOR.MINOR version.
 if isinstance(version_match := match(r"^\d.\d", __version__), Match):

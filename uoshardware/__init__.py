@@ -4,9 +4,9 @@ from logging import FileHandler, Formatter, getLogger
 from pathlib import Path
 
 __author__ = "Steve Richardson (Creating Null)"
-__copywright__ = f"2023, {__author__}"
+__copyright__ = f"2023, {__author__}"
 # Semantic Versioning, MAJOR.MINOR.PATCH[-'pre-release-type'.'num']
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 # Dead code false positive as this constant is for use outside primary project.
 PROJECT = "UOS Hardware"  # dead: disable
 
@@ -21,7 +21,7 @@ class Persistence(Enum):
 
 
 class Loading(Enum):
-    """Set the management strategy for handling the devices connection."""
+    """Set the management strategy for handling the device's connection."""
 
     LAZY = 0
     EAGER = 1
