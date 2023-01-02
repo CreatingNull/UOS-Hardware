@@ -7,10 +7,10 @@ _ARDUINO_NANO_3 = Device(
     name="Arduino Nano 3",
     interfaces=[Interface.STUB, Interface.SERIAL],
     functions_enabled={
-        UOSFunctions.set_gpio_output.name: [Persistence.NONE],
-        UOSFunctions.get_gpio_input.name: [Persistence.NONE],
+        UOSFunctions.set_gpio_output.name: [Persistence.NONE, Persistence.RAM],
+        UOSFunctions.get_gpio_input.name: [Persistence.NONE, Persistence.RAM],
         UOSFunctions.get_adc_input.name: [Persistence.NONE],
-        UOSFunctions.reset_all_io.name: [Persistence.NONE],
+        UOSFunctions.reset_all_io.name: [Persistence.RAM],
         UOSFunctions.hard_reset.name: [Persistence.NONE],
         UOSFunctions.get_system_info.name: [Persistence.NONE],
         UOSFunctions.get_gpio_config.name: [Persistence.NONE],

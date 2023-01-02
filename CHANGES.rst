@@ -11,6 +11,10 @@ Version 0.5.0
   the project.
   The logger has a NullHandler so is suppressed unless the client enables.
   Removed configure_logs function as this was no longer functional.
+* Updating reset_all_io to use persistence levels pertaining to where the
+  reset details are obtained from.
+* Enabling volatile instructions on arduino devices as this is now
+  available at the firmware level.
 
 Version 0.4.0
 -------------

@@ -210,11 +210,15 @@ class UOSDevice:  # dead: disable
             ),
         )
 
-    def reset_all_io(self) -> ComResult:
-        """Execute the reset IO at the defined volatility level."""
+    def reset_all_io(self, volatility=Persistence.RAM) -> ComResult:
+        """Execute the reset IO at the defined volatility level.
+
+        :param volatility: Where should the pins reset from, use constants from uoshardware.
+        :return: ComResult object containing the result of the reset operation..
+        """
         return self.__execute_instruction(
             UOSFunctions.reset_all_io,
-            InstructionArguments(),
+            InstructionArguments(volatility=volatility),
         )
 
     def hard_reset(self) -> ComResult:

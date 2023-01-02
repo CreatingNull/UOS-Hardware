@@ -42,13 +42,13 @@ class UOSFunctions:
     )
     get_adc_input = UOSFunction(
         name="get_adc_input",
-        address_lut={Persistence.NONE: 85},
+        address_lut={Persistence.NONE: 90},
         ack=True,
         rx_packets_expected=[2],
         pin_requirements=["adc_in"],
     )
     reset_all_io = UOSFunction(
-        name="reset_all_io", address_lut={Persistence.NONE: 245}, ack=True
+        name="reset_all_io", address_lut={Persistence.RAM: 79}, ack=True
     )
     hard_reset = UOSFunction(
         name="hard_reset", address_lut={Persistence.NONE: -1}, ack=False
