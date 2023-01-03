@@ -190,21 +190,6 @@ class UOSDevice:  # dead: disable
             ),
         )
 
-    def get_gpio_config(self, pin: int) -> ComResult:
-        """Read the configuration for a digital pin on the device.
-
-        :param pin: Defines the pin for config querying.
-        :return: ComResult object containing the system information.
-        """
-        return self.__execute_instruction(
-            UOSFunctions.get_gpio_config,
-            InstructionArguments(
-                payload=tuple([pin]),
-                expected_rx_packets=2,
-                check_pin=pin,
-            ),
-        )
-
     def reset_all_io(self, volatility=Persistence.RAM) -> ComResult:
         """Execute the reset IO at the defined volatility level.
 

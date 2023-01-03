@@ -13,7 +13,6 @@ _ARDUINO_NANO_3 = Device(
         UOSFunctions.reset_all_io.name: [Persistence.RAM],
         UOSFunctions.hard_reset.name: [Persistence.NONE],
         UOSFunctions.get_system_info.name: [Persistence.NONE],
-        UOSFunctions.get_gpio_config.name: [Persistence.NONE],
     },
     pins={
         2: Pin(gpio_out=True, gpio_in=True, pull_up=True),

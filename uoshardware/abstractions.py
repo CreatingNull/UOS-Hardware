@@ -59,13 +59,6 @@ class UOSFunctions:
         ack=True,
         rx_packets_expected=[6],
     )
-    get_gpio_config = UOSFunction(
-        name="get_gpio_config",
-        address_lut={Persistence.NONE: 251},
-        ack=True,
-        rx_packets_expected=[2],
-        pin_requirements=[],
-    )
 
     @staticmethod
     def enumerate_functions() -> list:

@@ -21,6 +21,8 @@ Version 0.5.0
   If these are distinct then the analog should be aliased as virtual higher
   index pins.
 * Fixed a bug where get compatible pins wasn't verifying requirements.
+* Removed get gpio config as this functionality is no longer applicable in
+  the new UOS design.
 
 Version 0.4.0
 -------------
