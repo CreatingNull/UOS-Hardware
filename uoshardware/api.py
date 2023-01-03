@@ -51,7 +51,7 @@ class UOSDevice:  # dead: disable
 
     :ivar device: Device definitions as parsed from a compatible ini.
     :ivar identity: The type of device, this is must have a valid device in the config.
-    :ivar connection: Compliant connection string for identifying the device and interface.
+    :ivar address: Compliant connection string for identifying the device and interface.
     :ivar __device_interface: Lower level communication protocol layer.
     :ivar __kwargs: Connection specific / optional parameters.
     """
@@ -165,21 +165,16 @@ class UOSDevice:  # dead: disable
     def get_adc_input(
         self,
         pin: int,
-        volatility: Persistence = Persistence.NONE,
     ) -> ComResult:
         """Read the current 10 bit ADC value.
 
         :param pin: The index of the analog pin to read
-        :param volatility: How volatile should the command be, use constants from uoshardware.
         :return: ComResult object containing the ADC readings.
         """
         return self.__execute_instruction(
             UOSFunctions.get_adc_input,
             InstructionArguments(
-                payload=tuple([pin]),
-                expected_rx_packets=2,
-                check_pin=pin,
-                volatility=volatility,
+                payload=tuple([pin]), expected_rx_packets=2, check_pin=pin
             ),
         )
 

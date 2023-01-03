@@ -240,7 +240,7 @@ class Pin:
     adc_in: bool = False
     pull_up: bool = False
     pull_down: bool = False
-    alias: int | None = None
+    aliases: list = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -250,8 +250,7 @@ class Device:
     name: str
     interfaces: list
     functions_enabled: dict
-    digital_pins: dict = field(default_factory=dict)
-    analog_pins: dict = field(default_factory=dict)
+    pins: dict = field(default_factory=dict)
     aux_params: dict = field(default_factory=dict)
 
     def get_compatible_pins(self, function: UOSFunction) -> dict:
@@ -265,12 +264,12 @@ class Device:
             or function not in UOSFunctions.enumerate_functions()
         ):
             raise UOSUnsupportedError(f"UOS function {function.name} doesn't exist.")
-        requirements = function.pin_requirements
-        if requirements is None:  # pins are not relevant to this function
+        if function.pin_requirements is None:  # pins are not relevant to this function
             return {}
-        pin_dict = self.analog_pins if "adc_in" in requirements else self.digital_pins
         return {
-            pin_name: pin
-            for pin_name, pin in pin_dict.items()
-            if all(hasattr(pin, requirement) for requirement in requirements)
+            pin_index: pin
+            for pin_index, pin in self.pins.items()
+            if all(
+                getattr(pin, requirement) for requirement in function.pin_requirements
+            )
         }

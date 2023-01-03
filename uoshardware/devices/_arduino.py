@@ -15,7 +15,7 @@ _ARDUINO_NANO_3 = Device(
         UOSFunctions.get_system_info.name: [Persistence.NONE],
         UOSFunctions.get_gpio_config.name: [Persistence.NONE],
     },
-    digital_pins={
+    pins={
         2: Pin(gpio_out=True, gpio_in=True, pull_up=True),
         3: Pin(
             gpio_out=True,
@@ -60,32 +60,32 @@ _ARDUINO_NANO_3 = Device(
             gpio_in=True,
             pull_up=True,
         ),
-        14: Pin(gpio_out=True, gpio_in=True, pull_up=True, alias=0),
-        15: Pin(gpio_out=True, gpio_in=True, pull_up=True, alias=1),
-        16: Pin(gpio_out=True, gpio_in=True, pull_up=True, alias=2),
-        17: Pin(gpio_out=True, gpio_in=True, pull_up=True, alias=3),
+        14: Pin(gpio_out=True, gpio_in=True, pull_up=True, aliases=["A0"], adc_in=True),
+        15: Pin(gpio_out=True, gpio_in=True, pull_up=True, aliases=["A1"], adc_in=True),
+        16: Pin(gpio_out=True, gpio_in=True, pull_up=True, aliases=["A2"], adc_in=True),
+        17: Pin(gpio_out=True, gpio_in=True, pull_up=True, aliases=["A3"], adc_in=True),
         18: Pin(
             gpio_out=True,
             gpio_in=True,
             pull_up=True,
-            alias=4,
+            adc_in=True,
+            aliases=["A4"],
         ),
         19: Pin(
             gpio_out=True,
             gpio_in=True,
             pull_up=True,
-            alias=5,
+            adc_in=True,
+            aliases=["A5"],
         ),
-    },
-    analog_pins={
-        0: Pin(adc_in=True, alias=14),
-        1: Pin(adc_in=True, alias=15),
-        2: Pin(adc_in=True, alias=16),
-        3: Pin(adc_in=True, alias=17),
-        4: Pin(adc_in=True, alias=18),
-        5: Pin(adc_in=True, alias=19),
-        6: Pin(adc_in=True),
-        7: Pin(adc_in=True),
+        20: Pin(
+            adc_in=True,
+            aliases=["A6"],
+        ),
+        21: Pin(
+            adc_in=True,
+            aliases=["A7"],
+        ),
     },
     aux_params={"default_baudrate": 115200},
 )
@@ -95,15 +95,10 @@ _ARDUINO_UNO_3 = Device(
     name="Arduino Uno 3",
     interfaces=_ARDUINO_NANO_3.interfaces,
     functions_enabled=_ARDUINO_NANO_3.functions_enabled,
-    digital_pins=_ARDUINO_NANO_3.digital_pins,
-    analog_pins={
-        0: Pin(adc_in=True, alias=14),
-        1: Pin(adc_in=True, alias=15),
-        2: Pin(adc_in=True, alias=16),
-        3: Pin(adc_in=True, alias=17),
-        4: Pin(adc_in=True, alias=18),
-        5: Pin(adc_in=True, alias=19),
-        # Uno has 2 less ADCs pins than the nano.
+    pins={  # Doesn't expose the addition mux'd ADCs.
+        pin_index: value
+        for pin_index, value in _ARDUINO_NANO_3.pins.items()
+        if pin_index not in {20, 21}
     },
     aux_params={"default_baudrate": 115200},
 )

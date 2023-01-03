@@ -15,6 +15,12 @@ Version 0.5.0
   reset details are obtained from.
 * Enabling volatile instructions on arduino devices as this is now
   available at the firmware level.
+* Removed volatility from get_adc_input as this doesn't apply to that
+  function.
+* Removing the concept of separate analog and digital pins.
+  If these are distinct then the analog should be aliased as virtual higher
+  index pins.
+* Fixed a bug where get compatible pins wasn't verifying requirements.
 
 Version 0.4.0
 -------------
