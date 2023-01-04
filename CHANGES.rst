@@ -23,6 +23,7 @@ Version 0.5.0
 * Fixed a bug where get compatible pins wasn't verifying requirements.
 * Removed get gpio config as this functionality is no longer applicable in
   the new UOS design.
+* Updated the get_gpio_input interface to allow for enabling pull-up.
 
 Version 0.4.0
 -------------

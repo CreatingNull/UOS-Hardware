@@ -143,19 +143,22 @@ class UOSDevice:  # dead: disable
         )
 
     def get_gpio_input(
-        self, pin: int, level: int, volatility: Persistence = Persistence.NONE
+        self,
+        pin: int,
+        pull_up: bool = False,
+        volatility: Persistence = Persistence.NONE,
     ) -> ComResult:
         """Read a GPIO pins level from device and returns the value.
 
         :param pin: The numeric number of the pin as defined in the dictionary for that device.
-        :param level: Not used currently, future will define pull-up state.
+        :param pull_up: Enable the internal pull-up resistor. Default is false.
         :param volatility: How volatile should the command be, use constants from uoshardware.
         :return: ComResult object.
         """
         return self.__execute_instruction(
             UOSFunctions.get_gpio_input,
             InstructionArguments(
-                payload=(pin, level),
+                payload=(pin, 0 if pull_up else 1),
                 expected_rx_packets=2,
                 check_pin=pin,
                 volatility=volatility,
