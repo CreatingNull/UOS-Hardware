@@ -28,6 +28,8 @@ Version 0.5.0
   packet rather than all of these needing to build the packet internally.
 * Shifted NPC based functionality into an explict class that bundles this.
   ``abstractions.NPCPacket``
+* Including the TX packet in the RX response.
+  This allows us more freedom to build higher level decoding functions.
 
 Version 0.4.0
 -------------

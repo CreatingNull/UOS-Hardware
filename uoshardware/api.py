@@ -293,6 +293,8 @@ class UOSDevice:  # dead: disable
                             rx_response.status = rx_response.status & (
                                 computed_checksum == current_packet[-2]
                             )
+                # include the tx packet for convenience
+                rx_response.tx_packet = packet
             else:  # run a special action
                 rx_response = getattr(self.__device_interface, function.name)()
         finally:  # Safety check for lazy loading being used outside of context manager

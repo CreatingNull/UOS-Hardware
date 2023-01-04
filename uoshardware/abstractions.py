@@ -77,26 +77,6 @@ class UOSFunctions:
         return None  # function not found.
 
 
-@dataclass
-class ComResult:
-    """Containing the data structure used to capture UOS results."""
-
-    status: bool
-    exception: str = ""
-    ack_packet: list = field(default_factory=list)
-    rx_packets: list = field(default_factory=list)
-
-
-@dataclass
-class InstructionArguments:
-    """Containing the data structure used to generalise UOS arguments."""
-
-    payload: tuple = ()
-    expected_rx_packets: int = 1
-    check_pin: int | None = None
-    volatility: Persistence = Persistence.NONE
-
-
 @dataclass(init=False)
 class NPCPacket:
     """Class contains functions and data for the packet based communication."""
@@ -161,6 +141,27 @@ class NPCPacket:
             "When checking `expects_rx_packets, "
             f"function for address {self.to_address} could not be located."
         )
+
+
+@dataclass
+class ComResult:
+    """Containing the data structure used to capture UOS results."""
+
+    status: bool
+    exception: str = ""
+    ack_packet: list = field(default_factory=list)
+    rx_packets: list = field(default_factory=list)
+    tx_packet: NPCPacket | None = None
+
+
+@dataclass
+class InstructionArguments:
+    """Containing the data structure used to generalise UOS arguments."""
+
+    payload: tuple = ()
+    expected_rx_packets: int = 1
+    check_pin: int | None = None
+    volatility: Persistence = Persistence.NONE
 
 
 class UOSInterface(metaclass=ABCMeta):
