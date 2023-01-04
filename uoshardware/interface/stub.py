@@ -1,6 +1,6 @@
 """Package is used as a simulated UOSInterface for test purposes."""
 from uoshardware import UOSCommunicationError
-from uoshardware.abstractions import ComResult, UOSInterface
+from uoshardware.abstractions import ComResult, NPCPacket, UOSInterface
 
 
 class Stub(UOSInterface):
@@ -13,13 +13,7 @@ class Stub(UOSInterface):
         self.errored = errored
         self.connection = connection
 
-    def execute_instruction(
-        self,
-        address: int,
-        # Dead code false positive as this is over-riding an interface.
-        payload: tuple[int, ...],  # dead: disable
-        **kwargs,
-    ) -> ComResult:
+    def execute_instruction(self, packet: NPCPacket) -> ComResult:
         """Simulate executing an instruction on a UOS endpoint.
 
         Should check whether the last instruction was valid and store
@@ -28,16 +22,19 @@ class Stub(UOSInterface):
         """
         if not self.__open:
             raise UOSCommunicationError("Port must be open to execute instructions.")
-        function = kwargs["function"]
-        if function is not None:
-            if function.ack:
-                self.__packet_buffer.append(self.get_npc_packet(0, address, tuple([0])))
-            for rx_packet in function.rx_packets_expected:
-                self.__packet_buffer.append(
-                    self.get_npc_packet(0, address, tuple(0 for _ in range(rx_packet)))
-                )
-            return ComResult(True)
-        raise UOSCommunicationError("Cannot execute function 'None'.")
+        if packet.expects_ack():
+            # Dummy an ack packet.
+            self.__packet_buffer.append(
+                NPCPacket(0, packet.to_address, tuple([0])).packet
+            )
+        for rx_packet in packet.expects_rx_packets():
+            # Dummy response packets
+            self.__packet_buffer.append(
+                NPCPacket(
+                    0, packet.to_address, tuple(0 for _ in range(rx_packet))
+                ).packet
+            )
+        return ComResult(True)
 
     # Dead code detection false positive due to abstract interface.
     def read_response(

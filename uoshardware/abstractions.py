@@ -1,7 +1,6 @@
 """Module defining the base class and static func for interfaces."""
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
-from functools import lru_cache
 
 from uoshardware import Persistence, UOSUnsupportedError
 
@@ -69,6 +68,14 @@ class UOSFunctions:
             if isinstance(getattr(UOSFunctions, member_name), UOSFunction)
         ]
 
+    @staticmethod
+    def get_from_address(address: int) -> UOSFunction | None:
+        """Look up function from the address."""
+        for function in UOSFunctions.enumerate_functions():
+            if address in function.address_lut.values():
+                return function  # function located.
+        return None  # function not found.
+
 
 @dataclass
 class ComResult:
@@ -78,7 +85,6 @@ class ComResult:
     exception: str = ""
     ack_packet: list = field(default_factory=list)
     rx_packets: list = field(default_factory=list)
-    aux_data: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -91,18 +97,81 @@ class InstructionArguments:
     volatility: Persistence = Persistence.NONE
 
 
+@dataclass(init=False)
+class NPCPacket:
+    """Class contains functions and data for the packet based communication."""
+
+    to_address: int
+    from_address: int
+    payload: tuple[int, ...]
+    packet: bytes
+
+    def __init__(self, to_address: int, from_address: int, payload: tuple[int, ...]):
+        """Construct a new packet object."""
+        self.to_address = to_address
+        self.from_address = from_address
+        self.payload = payload
+        self.packet = self.compute_packet()
+
+    def compute_packet(self) -> bytes:
+        """Generate a standardised NPC binary packet."""
+        if (
+            self.to_address < 256
+            and self.from_address < 256
+            and len(self.payload) < 256
+        ):  # check input is possible to parse
+            packet_data = tuple(
+                [self.to_address, self.from_address, len(self.payload)]
+                + list(self.payload)
+            )
+            lrc = NPCPacket.get_npc_checksum(packet_data)
+            return bytes(
+                [0x3E, packet_data[0], packet_data[1], len(self.payload)]
+                + list(self.payload)
+                + [lrc, 0x3C]
+            )
+        return bytes([])
+
+    @staticmethod
+    def get_npc_checksum(packet_data: tuple[int, ...]) -> int:
+        """Generate a NPC LRC checksum.
+
+        :param packet_data: List of the uint8 values from an NPC packet.
+        :return: NPC checksum as an 8-bit integer.
+        """
+        lrc = 0
+        for byte in packet_data:
+            lrc = (lrc + byte) & 0xFF
+        return ((lrc ^ 0xFF) + 1) & 0xFF
+
+    def expects_ack(self) -> bool:
+        """Check if this packet is expected to be acknowledged."""
+        if function := UOSFunctions.get_from_address(self.to_address):
+            return function.ack
+        raise UOSUnsupportedError(
+            "When checking `gets_ack`, "
+            f"function for address {self.to_address} could not be located.",
+        )
+
+    def expects_rx_packets(self) -> list[int]:
+        """Check if this packet expects rx packets from the function def."""
+        if function := UOSFunctions.get_from_address(self.to_address):
+            return function.rx_packets_expected
+        raise UOSUnsupportedError(
+            "When checking `expects_rx_packets, "
+            f"function for address {self.to_address} could not be located."
+        )
+
+
 class UOSInterface(metaclass=ABCMeta):
     """Base class for low level UOS interfaces classes to inherit."""
 
     # Dead code suppression used as abstract interfaces are false positives.
     @abstractmethod
-    def execute_instruction(
-        self, address: int, payload: tuple[int, ...], **kwargs  # dead: disable
-    ) -> ComResult:
+    def execute_instruction(self, packet: NPCPacket) -> ComResult:  # dead: disable
         """Abstract method for executing instructions on UOSInterfaces.
 
-        :param address: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.
-        :param payload: A tuple containing the uint8 parameters of the UOS instruction.
+        :param packet: A tuple containing the uint8 npc packet for the UOS instruction.
         :returns: ComResult object.
         :raises: UOSUnsupportedError if the interface hasn't been built correctly.
         :raises: UOSCommunicationError if there is a problem completing the action.
@@ -183,40 +252,6 @@ class UOSInterface(metaclass=ABCMeta):
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.enumerate_devices.__name__} prototype."
         )
-
-    @staticmethod
-    @lru_cache(maxsize=100)
-    def get_npc_packet(to_addr: int, from_addr: int, payload: tuple[int, ...]) -> bytes:
-        """Generate a standardised NPC binary packet.
-
-        :param to_addr: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.
-        :param from_addr: An 8-bit unsigned integer of the host system, usually 0.
-        :param payload: A tuple containing the unsigned 8-bit integers of the command.
-        :return: NPC packet as a bytes object. No bytes returned on fault.
-        """
-        if (
-            to_addr < 256 and from_addr < 256 and len(payload) < 256
-        ):  # check input is possible to parse
-            packet_data = tuple([to_addr, from_addr, len(payload)] + list(payload))
-            lrc = UOSInterface.get_npc_checksum(packet_data)
-            return bytes(
-                [0x3E, packet_data[0], packet_data[1], len(payload)]
-                + list(payload)
-                + [lrc, 0x3C]
-            )
-        return bytes([])
-
-    @staticmethod
-    def get_npc_checksum(packet_data: tuple[int, ...]) -> int:
-        """Generate a NPC LRC checksum.
-
-        :param packet_data: List of the uint8 values from an NPC packet.
-        :return: NPC checksum as a 8-bit integer.
-        """
-        lrc = 0
-        for byte in packet_data:
-            lrc = (lrc + byte) & 0xFF
-        return ((lrc ^ 0xFF) + 1) & 0xFF
 
 
 @dataclass(frozen=True)

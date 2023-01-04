@@ -4,6 +4,7 @@ from uoshardware.abstractions import (
     ComResult,
     Device,
     InstructionArguments,
+    NPCPacket,
     UOSFunction,
     UOSFunctions,
     UOSInterface,
@@ -262,11 +263,13 @@ class UOSDevice:  # dead: disable
                 self.open()
             if function.address_lut[instruction_data.volatility] >= 0:
                 # a normal instruction
-                tx_response = self.__device_interface.execute_instruction(
-                    function.address_lut[instruction_data.volatility],
-                    instruction_data.payload,
-                    function=function,
+                packet = NPCPacket(
+                    to_address=function.address_lut[instruction_data.volatility],
+                    from_address=0,
+                    payload=instruction_data.payload,
                 )
+                logger.debug("Function %s assembled packet: %s", function.name, packet)
+                tx_response = self.__device_interface.execute_instruction(packet)
                 if tx_response.status:
                     rx_response = self.__device_interface.read_response(
                         instruction_data.expected_rx_packets, 2
@@ -279,10 +282,8 @@ class UOSDevice:  # dead: disable
                                 if count == 0
                                 else rx_response.rx_packets[count - 1]
                             )
-                            computed_checksum = (
-                                self.__device_interface.get_npc_checksum(
-                                    current_packet[1:-2]
-                                )
+                            computed_checksum = NPCPacket.get_npc_checksum(
+                                current_packet[1:-2]
                             )
                             logger.debug(
                                 "Calculated checksum %s must match rx %s",
@@ -297,9 +298,8 @@ class UOSDevice:  # dead: disable
         finally:  # Safety check for lazy loading being used outside of context manager
             if self.loading == Loading.LAZY:  # Lazy loaded
                 self.close()
-        if (
-            not rx_response.status and retry
-        ):  # allow one retry per instruction due to DTR resets
+        if not rx_response.status and retry:
+            # allow one retry per instruction due to DTR resets
             return self.__execute_instruction(function, instruction_data, False)
         return rx_response
 

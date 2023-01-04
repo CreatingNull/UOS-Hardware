@@ -1,9 +1,9 @@
-"""Unit tests for the abstractions module."""
+"""Unit tests for the `abstractions` module."""
 import pytest
 
 from tests import Packet
 from uoshardware import UOSUnsupportedError
-from uoshardware.abstractions import UOSInterface
+from uoshardware.abstractions import NPCPacket, UOSFunction, UOSFunctions, UOSInterface
 
 TEST_PACKETS = [
     Packet(
@@ -34,7 +34,7 @@ def test_execute_instruction():
     """Using the base class directly should throw an error."""
     with pytest.raises(UOSUnsupportedError):
         # noinspection PyTypeChecker
-        UOSInterface.execute_instruction(self=None, address=10, payload=())
+        UOSInterface.execute_instruction(self=None, packet=NPCPacket(0, 10, tuple([])))
 
 
 def test_read_response():
@@ -107,7 +107,7 @@ def test_close():
 def test_get_npc_checksum(test_packet_data: tuple, expected_lrc: int):
     """Checks the computation of LRC checksums for some known packets."""
     print(f"\n -> packet: {test_packet_data}, lrc:{expected_lrc}")
-    assert UOSInterface.get_npc_checksum(test_packet_data) == expected_lrc
+    assert NPCPacket.get_npc_checksum(test_packet_data) == expected_lrc
 
 
 @pytest.mark.parametrize(
@@ -120,10 +120,23 @@ def test_get_npc_packet(test_packet: Packet):
         f"payload: {test_packet.payload}, packet: {test_packet.binary!r}"
     )
     assert (
-        UOSInterface.get_npc_packet(
+        NPCPacket(
             test_packet.address_to,
             test_packet.address_from,
             tuple(test_packet.payload),
-        )
+        ).packet
         == test_packet.binary
     )
+
+
+@pytest.mark.parametrize(
+    "address,function",
+    [
+        (60, UOSFunctions.set_gpio_output),
+        (79, UOSFunctions.reset_all_io),
+        (257, None),
+    ],
+)
+def test_get_uos_function_from_address(address: int, function: UOSFunction):
+    """Checks the function for looking up a function from its UOS addr."""
+    assert UOSFunctions.get_from_address(address) == function

@@ -4,6 +4,7 @@ from time import sleep
 import pytest
 
 from uoshardware import UOSCommunicationError
+from uoshardware.abstractions import NPCPacket
 from uoshardware.interface.serial import Serial
 
 # Allow access to protected members in test module.
@@ -36,7 +37,7 @@ class TestSerialPort:
         assert npc_serial_port.open() is None
         assert npc_serial_port._device is not None
         sleep(2)  # Allow the system time to boot
-        assert npc_serial_port.execute_instruction(64, (13, 0, 1)).status
+        assert npc_serial_port.execute_instruction(NPCPacket(61, 0, (13, 1))).status
         response = npc_serial_port.read_response(expect_packets=1, timeout_s=2)
         assert response.status
         assert npc_serial_port.hard_reset()
@@ -55,6 +56,6 @@ class TestSerialPort:
             invalid_serial_port.open()
         assert invalid_serial_port.close() is None
         with pytest.raises(UOSCommunicationError):
-            invalid_serial_port.execute_instruction(64, (13, 0, 1))
+            invalid_serial_port.execute_instruction(NPCPacket(64, 0, (13, 0, 1)))
         with pytest.raises(UOSCommunicationError):
             invalid_serial_port.read_response(expect_packets=1, timeout_s=1)

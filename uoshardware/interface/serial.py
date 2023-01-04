@@ -7,7 +7,7 @@ from serial.serialutil import SerialException
 from serial.tools import list_ports
 
 from uoshardware import UOSCommunicationError, logger
-from uoshardware.abstractions import ComResult, UOSInterface
+from uoshardware.abstractions import ComResult, NPCPacket, UOSInterface
 
 if platform.system() == "Linux":
     import termios  # pylint: disable=E0401
@@ -96,22 +96,18 @@ class Serial(UOSInterface):
         logger.debug("Connection closed successfully")
         self._device = None
 
-    # Kwargs is defined in the abstractmethod definition, false positive.
-    def execute_instruction(self, address, payload, **kwargs):  # dead: disable
+    def execute_instruction(self, packet: NPCPacket):
         """Build and execute a new instruction packet.
 
-        :param address: An 8-bit unsigned integer of the UOS subsystem targeted by the instruction.
-        :param payload: A tuple containing the uint8 parameters of the UOS instruction.
+        :param packet: A tuple containing the uint8 npc packet for the UOS instruction.
         :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
         """
         if self._device is None:
             raise UOSCommunicationError(
                 "Connection must be open to execute instructions."
             )
-        packet = self.get_npc_packet(to_addr=address, from_addr=0, payload=payload)
-        logger.debug("packet formed %s", packet)
         try:  # Send the packet.
-            num_bytes = self._device.write(packet)
+            num_bytes = self._device.write(packet.packet)
             self._device.flush()
             logger.debug("Sent %s bytes of data", num_bytes)
         except serial.SerialException as exception:
@@ -120,7 +116,7 @@ class Serial(UOSInterface):
             ) from exception
         finally:
             self._device.reset_output_buffer()
-        return ComResult(num_bytes == len(packet))
+        return ComResult(num_bytes == len(packet.packet))
 
     def read_response(self, expect_packets: int, timeout_s: float):
         """Read ACK and response packets from the serial device.

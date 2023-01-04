@@ -24,6 +24,10 @@ Version 0.5.0
 * Removed get gpio config as this functionality is no longer applicable in
   the new UOS design.
 * Updated the get_gpio_input interface to allow for enabling pull-up.
+* Updated interface execute_instruction prototype to take in a pre-built
+  packet rather than all of these needing to build the packet internally.
+* Shifted NPC based functionality into an explict class that bundles this.
+  ``abstractions.NPCPacket``
 
 Version 0.4.0
 -------------
