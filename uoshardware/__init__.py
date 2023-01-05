@@ -38,6 +38,10 @@ class UOSCommunicationError(UOSError):
     """Exception while communicating with a UOS Device."""
 
 
+class UOSRuntimeError(UOSError):
+    """General exception for runtime failure, usually indicates misuse."""
+
+
 # Configures the global logger for the library
 # Note: Clients need to initialize logging otherwise no output will be visible.
 logger = logging.getLogger(__name__)

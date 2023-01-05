@@ -1,8 +1,9 @@
 """Module defining the base class and static func for interfaces."""
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
+from datetime import datetime
 
-from uoshardware import Persistence, UOSUnsupportedError
+from uoshardware import Persistence, UOSRuntimeError, UOSUnsupportedError, logger
 
 
 @dataclass(frozen=True)
@@ -153,6 +154,15 @@ class ComResult:
     rx_packets: list = field(default_factory=list)
     tx_packet: NPCPacket | None = None
 
+    def get_rx_payload(self, packet_index: int) -> list[int]:
+        """Return just the payload portion of a rx packet."""
+        if len(self.rx_packets) <= packet_index:
+            raise UOSRuntimeError(
+                f"Can't index payload {packet_index} of "
+                f"{len(self.rx_packets)} rx packet(s)."
+            )
+        return self.rx_packets[packet_index][4:-2]
+
 
 @dataclass
 class InstructionArguments:
@@ -255,7 +265,44 @@ class UOSInterface(metaclass=ABCMeta):
         )
 
 
-@dataclass(frozen=True)
+@dataclass(init=False)
+class Sample:
+    """A converted response from a reading on a pin."""
+
+    raw_value: int
+    value: float
+    time: datetime
+
+
+@dataclass(init=False)
+class ADCSample(Sample):
+    """ADC specific Sample constructor for ADC readings."""
+
+    def __init__(self, raw_value: list[int], steps: int, reference: float):
+        """Create an ADC Sample."""
+        self.raw_value = int(bytes(raw_value).hex(), 16)  # convert bytes to int
+        self.value = (self.raw_value / steps) * reference
+        self.time = datetime.now()
+        logger.debug(
+            "Constructing ADCSample from `%s` with adc steps `%s` and ref `%s`",
+            self.raw_value,
+            steps,
+            reference,
+        )
+
+
+@dataclass(init=False)
+class DigitalSample(Sample):
+    """Digital specific sample constructor for gpio reads."""
+
+    def __init__(self, raw_value: int):
+        """Create a Digital GPIO Sample."""
+        self.raw_value = raw_value
+        self.value = raw_value
+        self.time = datetime.now()
+
+
+@dataclass
 class Pin:
     """Defines supported features of the pin."""
 
@@ -271,6 +318,10 @@ class Pin:
     pull_down: bool = False
     aliases: list = field(default_factory=list)
 
+    # Values updated during runtime.
+    gpio_reading: DigitalSample | None = None
+    adc_reading: ADCSample | None = None
+
 
 @dataclass(frozen=True)
 class Device:
@@ -279,7 +330,7 @@ class Device:
     name: str
     interfaces: list
     functions_enabled: dict
-    pins: dict = field(default_factory=dict)
+    pins: dict[int, Pin] = field(default_factory=dict)
     aux_params: dict = field(default_factory=dict)
 
     def get_compatible_pins(self, function: UOSFunction) -> dict:
@@ -302,3 +353,55 @@ class Device:
                 getattr(pin, requirement) for requirement in function.pin_requirements
             )
         }
+
+    def update_adc_samples(self, result: ComResult):
+        """Update the pin samples with the response of a get_adc_input."""
+        if not result.status or len(result.exception) != 0:
+            raise UOSRuntimeError("Can't update ADC samples from a failed response.")
+        if result.tx_packet is None or len(result.rx_packets) < 1:
+            raise UOSRuntimeError("Can't update ADC samples without a valid result.")
+        if (
+            "adc_reference" not in self.aux_params
+            or "adc_resolution" not in self.aux_params
+        ):
+            raise UOSRuntimeError("Device not properly defined for ADC updates.")
+        sample_values = result.get_rx_payload(0)
+        logger.debug("Device returned sampled adc values %s", sample_values)
+        for sample_index, pin in enumerate(result.tx_packet.payload):
+            if pin not in self.pins:
+                raise UOSRuntimeError(
+                    f"Can't update ADC samples on pin {pin} as it's invalid for {self.name}."
+                )
+            self.pins[pin].adc_reading = ADCSample(
+                sample_values[sample_index * 2 : sample_index * 2 + 2],
+                steps=pow(2, self.aux_params["adc_resolution"]),
+                reference=self.aux_params["adc_reference"],
+            )
+            logger.debug(
+                "Setting pin %s adc reading to %s",
+                pin,
+                # This is a false call as it can't be None here.
+                self.pins[pin].adc_reading.value,  # type: ignore
+            )
+
+    def update_gpio_samples(self, result: ComResult):
+        """Update the pin samples with the response of a get_gpio_inpout."""
+        if not result.status or len(result.exception) != 0:
+            raise UOSRuntimeError("Can't update GPIO samples from a failed responsee.")
+        if result.tx_packet is None or len(result.rx_packets) < 1:
+            raise UOSRuntimeError("Can't update GPIO samples without a valid result.")
+        sample_values = result.get_rx_payload(0)
+        logger.debug("Device returned sampled gpio values %s", sample_values)
+        for sample_index, pin in enumerate(sample_values):
+            pin = result.tx_packet.payload[2 * sample_index]
+            if pin not in self.pins:
+                raise UOSRuntimeError(
+                    f"Can't update GPIO samples on pin {pin} as it's invalid for {self.name}."
+                )
+            self.pins[pin].gpio_reading = DigitalSample(sample_values[sample_index])
+            logger.debug(
+                "Setting pin %s gpio reading to %s",
+                pin,
+                # This is a false call as it can't be None here.
+                self.pins[pin].gpio_reading.value,  # type: ignore
+            )

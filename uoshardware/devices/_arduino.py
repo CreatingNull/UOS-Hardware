@@ -86,7 +86,7 @@ _ARDUINO_NANO_3 = Device(
             aliases=["A7"],
         ),
     },
-    aux_params={"default_baudrate": 115200},
+    aux_params={"default_baudrate": 115200, "adc_reference": 5, "adc_resolution": 10},
 )
 
 
@@ -99,5 +99,5 @@ _ARDUINO_UNO_3 = Device(
         for pin_index, value in _ARDUINO_NANO_3.pins.items()
         if pin_index not in {20, 21}
     },
-    aux_params={"default_baudrate": 115200},
+    aux_params={"default_baudrate": 115200, "adc_reference": 5, "adc_resolution": 10},
 )

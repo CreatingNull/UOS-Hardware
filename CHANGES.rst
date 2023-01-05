@@ -30,6 +30,8 @@ Version 0.5.0
   ``abstractions.NPCPacket``
 * Including the TX packet in the RX response.
   This allows us more freedom to build higher level decoding functions.
+* Adding functionality to include ADC and GPIO responses as objects stored
+  in the device pins.
 
 Version 0.4.0
 -------------

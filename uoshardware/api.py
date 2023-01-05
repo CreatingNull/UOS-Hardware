@@ -156,15 +156,18 @@ class UOSDevice:  # dead: disable
         :param volatility: How volatile should the command be, use constants from uoshardware.
         :return: ComResult object.
         """
-        return self.__execute_instruction(
+        result = self.__execute_instruction(
             UOSFunctions.get_gpio_input,
             InstructionArguments(
-                payload=(pin, 0 if pull_up else 1),
+                payload=(pin, 1 if pull_up else 0),
                 expected_rx_packets=2,
                 check_pin=pin,
                 volatility=volatility,
             ),
         )
+        if result.status:
+            self.device.update_gpio_samples(result)
+        return result
 
     def get_adc_input(
         self,
@@ -175,12 +178,15 @@ class UOSDevice:  # dead: disable
         :param pin: The index of the analog pin to read
         :return: ComResult object containing the ADC readings.
         """
-        return self.__execute_instruction(
+        result = self.__execute_instruction(
             UOSFunctions.get_adc_input,
             InstructionArguments(
                 payload=tuple([pin]), expected_rx_packets=2, check_pin=pin
             ),
         )
+        if result.status:  # update the samples in the device.
+            self.device.update_adc_samples(result)
+        return result
 
     def get_system_info(self) -> ComResult:
         """Read the UOS version and device type.
