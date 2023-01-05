@@ -109,7 +109,7 @@ repos:
 # Lint docstrings.
 -   repo: https://github.com/PyCQA/pydocstyle
     # Waiting for a 3.10 release on pypi
-    rev: "6.1.1"
+    rev: "6.2.2"
     hooks:
     -   id: pydocstyle
         additional_dependencies:
