@@ -1,7 +1,7 @@
 Version 0.5.0
 -------------
 
-:Date: TBC
+:Date: 7-January-2023
 
 * BREAKING! Remaps address for redesign of UOS protocol.
   Restructured GPIO packets to suit the redesign.
