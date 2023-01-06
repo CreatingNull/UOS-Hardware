@@ -14,7 +14,7 @@ _ARDUINO_NANO_3 = Device(
         UOSFunctions.hard_reset.name: [Persistence.NONE],
         UOSFunctions.get_system_info.name: [Persistence.NONE],
     },
-    pins={
+    _pins={
         2: Pin(gpio_out=True, gpio_in=True, pull_up=True),
         3: Pin(
             gpio_out=True,
@@ -94,9 +94,9 @@ _ARDUINO_UNO_3 = Device(
     name="Arduino Uno 3",
     interfaces=_ARDUINO_NANO_3.interfaces,
     functions_enabled=_ARDUINO_NANO_3.functions_enabled,
-    pins={  # Doesn't expose the addition mux'd ADCs.
-        pin_index: value
-        for pin_index, value in _ARDUINO_NANO_3.pins.items()
+    _pins={  # Doesn't expose the additional mux'd ADCs.
+        pin_index: _ARDUINO_NANO_3.get_pin(pin_index)
+        for pin_index in _ARDUINO_NANO_3.get_pins()
         if pin_index not in {20, 21}
     },
     aux_params={"default_baudrate": 115200, "adc_reference": 5, "adc_resolution": 10},
