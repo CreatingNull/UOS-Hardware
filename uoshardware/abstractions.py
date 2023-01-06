@@ -351,11 +351,11 @@ class Device:
         """Return a set of pin indices known by this device."""
         return set(self._pins.keys())
 
-    def get_compatible_pins(self, function: UOSFunction) -> dict:
-        """Return a dict of pin objects that are suitable for a function.
+    def get_compatible_pins(self, function: UOSFunction) -> set:
+        """Get pins suitable for use with a particular UOS Function.
 
         :param function: the string name of the UOS Schema function.
-        :return: Dict of pin objects, keyed on pin index.
+        :return: Set of pin indices which support the function.
         """
         if (
             not isinstance(function, UOSFunction)
@@ -363,9 +363,9 @@ class Device:
         ):
             raise UOSUnsupportedError(f"UOS function {function.name} doesn't exist.")
         if function.pin_requirements is None:  # pins are not relevant to this function
-            return {}
+            return set()
         return {
-            pin_index: pin
+            pin_index
             for pin_index, pin in self._pins.items()
             if all(
                 getattr(pin, requirement) for requirement in function.pin_requirements

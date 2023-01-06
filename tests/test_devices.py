@@ -15,16 +15,18 @@ def test_get_compatible_pins(uos_device: UOSDevice):
         UOSFunctions.get_adc_input,
     ):
         if function.name in uos_device.device.functions_enabled:
-            pins = uos_device.device.get_compatible_pins(function)
-            assert len(pins) > 0
-            assert isinstance(pins[next(iter(pins))], Pin)
-            if function == UOSFunctions.get_adc_input:
-                assert all(pins[pin].adc_in for pin in pins)
-            elif function == UOSFunctions.set_gpio_output:
-                assert all(pins[pin].gpio_out for pin in pins)
+            pins_indices = uos_device.device.get_compatible_pins(function)
+            assert len(pins_indices) > 0
+            for pin_index in pins_indices:
+                pin = uos_device.device.get_pin(pin_index)
+                assert isinstance(pin, Pin)
+                if function == UOSFunctions.get_adc_input:
+                    assert pin.adc_in
+                elif function == UOSFunctions.set_gpio_output:
+                    assert pin.gpio_out
     # Check lookup of function without pins returns empty list.
     pins = uos_device.device.get_compatible_pins(UOSFunctions.hard_reset)
-    assert isinstance(pins, dict)
+    assert isinstance(pins, set)
     assert len(pins) == 0
     # Check bad function throws unsupported error
     with pytest.raises(UOSUnsupportedError):

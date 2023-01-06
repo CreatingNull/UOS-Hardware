@@ -32,8 +32,10 @@ Version 0.5.0
   This allows us more freedom to build higher level decoding functions.
 * Adding functionality to include ADC and GPIO responses as objects stored
   in the device pins.
-* Protected pins dict and instead exposed a get_pin function on device.
+* Protected pins dict and instead exposed a ``get_pin`` function on device.
   This allows introspection on pin internals to making usage easier.
+* Updated ``get_compatible_pins`` to return a set of pin indices rather
+  than a dict of pins. This is to encourage the use of ``get_pin`` OOP.
 
 Version 0.4.0
 -------------

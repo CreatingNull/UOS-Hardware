@@ -106,14 +106,12 @@ def test_device_function(uos_device, function: UOSFunction):
     for volatility in Persistence:
         if volatility not in uos_device.device.functions_enabled[function.name]:
             continue  # Ignore unsupported volatilities for device
-        pins = uos_device.device.get_compatible_pins(function)
-        if pins is None or len(pins) == 0:
-            pins = [0]  # insert a dummy pin for non-pinned functions.
-        for pin in pins:
+        pins_indices = uos_device.device.get_compatible_pins(function)
+        for pin_index in pins_indices:
             api_function = getattr(uos_device, function.name)
             call_arguments = {}
             if "pin" in signature(api_function).parameters.keys():
-                call_arguments["pin"] = pin
+                call_arguments["pin"] = pin_index
             if "level" in signature(api_function).parameters.keys():
                 call_arguments["level"] = 0
             if "volatility" in signature(api_function).parameters.keys():
