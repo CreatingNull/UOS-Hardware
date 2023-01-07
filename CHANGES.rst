@@ -14,6 +14,8 @@ Version 0.6.0
 * ``UOSDevice.device`` set protected to avoid confusion and misuse.
   This is primarily for internal use and where it is required for clients
   getter methods such as ``get_pin`` should be provided.
+* Removed checks to ``COMResult.exception`` length in internal code as it is
+  sufficient to just check ``COMResult.status``.
 
 Version 0.5.0
 -------------

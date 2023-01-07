@@ -337,7 +337,7 @@ class Device:
 
     def update_adc_samples(self, result: ComResult):
         """Update the pin samples with the response of a get_adc_input."""
-        if not result.status or len(result.exception) != 0:
+        if not result.status:
             raise UOSRuntimeError("Can't update ADC samples from a failed response.")
         if result.tx_packet is None or len(result.rx_packets) < 1:
             raise UOSRuntimeError("Can't update ADC samples without a valid result.")
@@ -367,7 +367,7 @@ class Device:
 
     def update_gpio_samples(self, result: ComResult):
         """Update the pin samples with the response of a get_gpio_inpout."""
-        if not result.status or len(result.exception) != 0:
+        if not result.status:
             raise UOSRuntimeError("Can't update GPIO samples from a failed responsee.")
         if result.tx_packet is None or len(result.rx_packets) < 1:
             raise UOSRuntimeError("Can't update GPIO samples without a valid result.")
