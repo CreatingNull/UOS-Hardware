@@ -18,7 +18,7 @@ def test_get_compatible_pins(uos_device: UOSDevice):
             pins_indices = uos_device.device.get_compatible_pins(function)
             assert len(pins_indices) > 0
             for pin_index in pins_indices:
-                pin = uos_device.device.get_pin(pin_index)
+                pin = uos_device.get_pin(pin_index)
                 assert isinstance(pin, Pin)
                 if function == UOSFunctions.get_adc_input:
                     assert pin.adc_in

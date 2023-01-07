@@ -332,24 +332,8 @@ class Device:
     name: str
     interfaces: list
     functions_enabled: dict
-    _pins: dict[int, Pin] = field(default_factory=dict)
+    pins: dict[int, Pin] = field(default_factory=dict)
     aux_params: dict = field(default_factory=dict)
-
-    def get_pin(self, pin_index) -> Pin:
-        """Return a pin object corresponding to index.
-
-        :param pin_index: The index of the pin to return.
-        :return: Pin object for provided index.
-        """
-        if pin_index not in self._pins:
-            raise UOSRuntimeError(
-                f"Pin index {pin_index} doesn't exist for device {self.name}"
-            )
-        return self._pins[pin_index]
-
-    def get_pins(self) -> set:
-        """Return a set of pin indices known by this device."""
-        return set(self._pins.keys())
 
     def get_compatible_pins(self, function: UOSFunction) -> set:
         """Get pins suitable for use with a particular UOS Function.
@@ -366,7 +350,7 @@ class Device:
             return set()
         return {
             pin_index
-            for pin_index, pin in self._pins.items()
+            for pin_index, pin in self.pins.items()
             if all(
                 getattr(pin, requirement) for requirement in function.pin_requirements
             )
@@ -386,11 +370,11 @@ class Device:
         sample_values = result.get_rx_payload(0)
         logger.debug("Device returned sampled adc values %s", sample_values)
         for sample_index, pin in enumerate(result.tx_packet.payload):
-            if pin not in self._pins:
+            if pin not in self.pins:
                 raise UOSRuntimeError(
                     f"Can't update ADC samples on pin {pin} as it's invalid for {self.name}."
                 )
-            self._pins[pin].adc_reading = ADCSample(
+            self.pins[pin].adc_reading = ADCSample(
                 sample_values[sample_index * 2 : sample_index * 2 + 2],
                 steps=pow(2, self.aux_params["adc_resolution"]),
                 reference=self.aux_params["adc_reference"],
@@ -399,7 +383,7 @@ class Device:
                 "Setting pin %s adc reading to %s",
                 pin,
                 # This is a false call as it can't be None here.
-                self._pins[pin].adc_reading.value,  # type: ignore
+                self.pins[pin].adc_reading.value,  # type: ignore
             )
 
     def update_gpio_samples(self, result: ComResult):
@@ -412,14 +396,14 @@ class Device:
         logger.debug("Device returned sampled gpio values %s", sample_values)
         for sample_index, pin in enumerate(sample_values):
             pin = result.tx_packet.payload[2 * sample_index]
-            if pin not in self._pins:
+            if pin not in self.pins:
                 raise UOSRuntimeError(
                     f"Can't update GPIO samples on pin {pin} as it's invalid for {self.name}."
                 )
-            self._pins[pin].gpio_reading = DigitalSample(sample_values[sample_index])
+            self.pins[pin].gpio_reading = DigitalSample(sample_values[sample_index])
             logger.debug(
                 "Setting pin %s gpio reading to %s",
                 pin,
                 # This is a false call as it can't be None here.
-                self._pins[pin].gpio_reading.value,  # type: ignore
+                self.pins[pin].gpio_reading.value,  # type: ignore
             )

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "uos-hardware"
-version = "0.5.0"
+version = "0.6.0"
 description = "A hardware abstraction layer for microcontrollers running UOS compliant firmware."
 authors = ["nulltek <steve.public@nulltek.xyz>"]
 license = "MIT"

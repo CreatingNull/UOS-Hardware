@@ -1,3 +1,15 @@
+Version 0.6.0
+-------------
+
+:Date: TBC
+
+* Moving get_pin function to be defined at the UOSDevice level.
+  This is a client-facing function and low level devices aren't client-facing.
+  Also set ``pin_index`` argument to be ``pin`` so this is more consistent
+  with the other API functions.
+* ``Device._pins`` un-protected as this was purely to promote use of get_pin.
+* ``Device.get_pins`` removed as this is not required if pins is not protected.
+
 Version 0.5.0
 -------------
 

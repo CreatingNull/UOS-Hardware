@@ -1,10 +1,17 @@
 """Provides the HAL layer for communicating with the hardware."""
-from uoshardware import Loading, Persistence, UOSUnsupportedError, logger
+from uoshardware import (
+    Loading,
+    Persistence,
+    UOSRuntimeError,
+    UOSUnsupportedError,
+    logger,
+)
 from uoshardware.abstractions import (
     ComResult,
     Device,
     InstructionArguments,
     NPCPacket,
+    Pin,
     UOSFunction,
     UOSFunctions,
     UOSInterface,
@@ -317,6 +324,19 @@ class UOSDevice:  # dead: disable
         :return: Boolean, true if connection is held active.
         """
         return self.__device_interface.is_active()
+
+    # False positive as this is a client-facing function.
+    def get_pin(self, pin: int) -> Pin:  # dead: disable
+        """Return a pin object corresponding to index.
+
+        :param pin: The index of the pin to return.
+        :return: Pin object for provided index.
+        """
+        if pin not in self.device.pins:
+            raise UOSRuntimeError(
+                f"Pin index {pin} doesn't exist for device {self.device.name}"
+            )
+        return self.device.pins[pin]
 
     def __repr__(self):
         """Representation of the UOS device.
