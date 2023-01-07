@@ -1,7 +1,7 @@
 Version 0.6.0
 -------------
 
-:Date: TBC
+:Date: 8-January-2023
 
 * Moving ``get_pin`` function to be defined at the UOSDevice level.
   This is a client-facing function and low level devices aren't client-facing.
