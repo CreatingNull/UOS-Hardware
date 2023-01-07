@@ -5,7 +5,7 @@ from enum import Enum
 __author__ = "Steve Richardson (Creating Null)"
 __copyright__ = f"2023, {__author__}"
 # Semantic Versioning, MAJOR.MINOR.PATCH[-'pre-release-type'.'num']
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 # Dead code false positive as this constant is for use outside primary project.
 PROJECT = "UOS Hardware"  # dead: disable
 
