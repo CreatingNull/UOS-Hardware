@@ -57,19 +57,16 @@ def get_device_definition(identity: str) -> Device | None:
 class UOSDevice:  # dead: disable
     """Class for high level object-orientated control of UOS devices.
 
-    :ivar __device: Device definitions as parsed from a compatible ini.
     :ivar identity: The type of device, this is must have a valid device in the config.
     :ivar address: Compliant connection string for identifying the device and interface.
-    :ivar __device_interface: Lower level communication protocol layer.
-    :ivar __kwargs: Connection specific / optional parameters.
     """
 
-    __device: Device
+    __device: Device  # Device definitions as parsed from a compatible ini.
     identity = ""
     address = ""
-    __device_interface: UOSInterface
+    __device_interface: UOSInterface  # Lower level communication protocol layer.
     loading: Loading
-    __kwargs: dict = {}
+    __kwargs: dict = {}  # Connection specific / optional parameters.
 
     def __init__(
         self,

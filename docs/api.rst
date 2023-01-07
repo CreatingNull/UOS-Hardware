@@ -17,7 +17,6 @@ class. This class defines hardware and firmware functionality for the
 device.
 
 .. autoclass:: uoshardware.abstractions.Device
-   :members:
 
 Abstraction Layer
 -----------------

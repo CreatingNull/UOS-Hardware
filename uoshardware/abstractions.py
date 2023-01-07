@@ -327,7 +327,7 @@ class Pin:
 
 @dataclass(frozen=True)
 class Device:
-    """Define an implemented UOS device dictionary."""
+    """Class defines hardware for an implemented UOS device."""
 
     name: str
     interfaces: list
