@@ -16,6 +16,8 @@ Version 0.6.0
   getter methods such as ``get_pin`` should be provided.
 * Removed checks to ``COMResult.exception`` length in internal code as it is
   sufficient to just check ``COMResult.status``.
+* Set ``abstractions.InstructionArguments`` class froze as there is no-reason
+  for it to be mutable.
 
 Version 0.5.0
 -------------

@@ -164,7 +164,7 @@ class ComResult:
         return self.rx_packets[packet_index][4:-2]
 
 
-@dataclass
+@dataclass(frozen=True)
 class InstructionArguments:
     """Containing the data structure used to generalise UOS arguments."""
 
