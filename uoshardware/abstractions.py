@@ -335,27 +335,6 @@ class Device:
     pins: dict[int, Pin] = field(default_factory=dict)
     aux_params: dict = field(default_factory=dict)
 
-    def get_compatible_pins(self, function: UOSFunction) -> set:
-        """Get pins suitable for use with a particular UOS Function.
-
-        :param function: the string name of the UOS Schema function.
-        :return: Set of pin indices which support the function.
-        """
-        if (
-            not isinstance(function, UOSFunction)
-            or function not in UOSFunctions.enumerate_functions()
-        ):
-            raise UOSUnsupportedError(f"UOS function {function.name} doesn't exist.")
-        if function.pin_requirements is None:  # pins are not relevant to this function
-            return set()
-        return {
-            pin_index
-            for pin_index, pin in self.pins.items()
-            if all(
-                getattr(pin, requirement) for requirement in function.pin_requirements
-            )
-        }
-
     def update_adc_samples(self, result: ComResult):
         """Update the pin samples with the response of a get_adc_input."""
         if not result.status or len(result.exception) != 0:

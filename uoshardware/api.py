@@ -57,14 +57,14 @@ def get_device_definition(identity: str) -> Device | None:
 class UOSDevice:  # dead: disable
     """Class for high level object-orientated control of UOS devices.
 
-    :ivar device: Device definitions as parsed from a compatible ini.
+    :ivar __device: Device definitions as parsed from a compatible ini.
     :ivar identity: The type of device, this is must have a valid device in the config.
     :ivar address: Compliant connection string for identifying the device and interface.
     :ivar __device_interface: Lower level communication protocol layer.
     :ivar __kwargs: Connection specific / optional parameters.
     """
 
-    device: Device
+    __device: Device
     identity = ""
     address = ""
     __device_interface: UOSInterface
@@ -101,13 +101,16 @@ class UOSDevice:  # dead: disable
             raise UOSUnsupportedError(
                 f"'{self.identity}' does not have a valid look up table"
             )
-        self.device = device
-        if interface == Interface.SERIAL and Interface.SERIAL in self.device.interfaces:
+        self.__device = device
+        if (
+            interface == Interface.SERIAL
+            and Interface.SERIAL in self.__device.interfaces
+        ):
             self.__device_interface = Serial(
                 address,
-                baudrate=self.device.aux_params["default_baudrate"],
+                baudrate=self.__device.aux_params["default_baudrate"],
             )
-        elif interface == Interface.STUB and Interface.STUB in self.device.interfaces:
+        elif interface == Interface.STUB and Interface.STUB in self.__device.interfaces:
             self.__device_interface = Stub(
                 connection=address,
                 errored=(kwargs["errored"] if "errored" in kwargs else False),
@@ -173,7 +176,7 @@ class UOSDevice:  # dead: disable
             ),
         )
         if result.status:
-            self.device.update_gpio_samples(result)
+            self.__device.update_gpio_samples(result)
         return result
 
     def get_adc_input(
@@ -192,7 +195,7 @@ class UOSDevice:  # dead: disable
             ),
         )
         if result.status:  # update the samples in the device.
-            self.device.update_adc_samples(result)
+            self.__device.update_adc_samples(result)
         return result
 
     def get_system_info(self) -> ComResult:
@@ -254,17 +257,16 @@ class UOSDevice:  # dead: disable
         :raises: UOSUnsupportedError if function is not possible on the loaded device.
         """
         if (
-            function.name not in self.device.functions_enabled
+            function.name not in self.__device.functions_enabled
             or (
                 instruction_data.check_pin is not None
-                and instruction_data.check_pin
-                not in self.device.get_compatible_pins(function)
+                and instruction_data.check_pin not in self.get_compatible_pins(function)
             )
             or instruction_data.volatility
-            not in self.device.functions_enabled[function.name]
+            not in self.__device.functions_enabled[function.name]
         ):
             logger.debug(
-                "Known functions %s", str(self.device.functions_enabled.keys())
+                "Known functions %s", str(self.__device.functions_enabled.keys())
             )
             raise UOSUnsupportedError(
                 f"{function.name}({instruction_data.volatility.name}) "
@@ -332,11 +334,40 @@ class UOSDevice:  # dead: disable
         :param pin: The index of the pin to return.
         :return: Pin object for provided index.
         """
-        if pin not in self.device.pins:
+        if pin not in self.__device.pins:
             raise UOSRuntimeError(
-                f"Pin index {pin} doesn't exist for device {self.device.name}"
+                f"Pin index {pin} doesn't exist for device {self.__device.name}"
             )
-        return self.device.pins[pin]
+        return self.__device.pins[pin]
+
+    def get_compatible_pins(self, function: UOSFunction) -> set:
+        """Get pins suitable for use with a particular UOS Function.
+
+        :param function: the string name of the UOS Schema function.
+        :return: Set of pin indices which support the function.
+        """
+        if (
+            not isinstance(function, UOSFunction)
+            or function not in UOSFunctions.enumerate_functions()
+        ):
+            raise UOSUnsupportedError(f"UOS function {function.name} doesn't exist.")
+        if function.pin_requirements is None:  # pins are not relevant to this function
+            return set()
+        return {
+            pin_index
+            for pin_index, pin in self.__device.pins.items()
+            if all(
+                getattr(pin, requirement) for requirement in function.pin_requirements
+            )
+        }
+
+    # False positive as this is a client-facing function.
+    def get_functions_enabled(self) -> dict:  # dead: disable
+        """Return functions enabled for the device.
+
+        :return: Dictionary of function names to list of Persistence levels.
+        """
+        return self.__device.functions_enabled
 
     def __repr__(self):
         """Representation of the UOS device.
@@ -345,6 +376,6 @@ class UOSDevice:  # dead: disable
         """
         return (
             f"<UOSDevice(address='{self.address}', identity='{self.identity}', "
-            f"device={self.device}, __device_interface='{self.__device_interface}', "
+            f"device={self.__device}, __device_interface='{self.__device_interface}', "
             f"__kwargs={self.__kwargs})>"
         )

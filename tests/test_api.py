@@ -101,12 +101,12 @@ def test_context_manager(uos_identities: dict):
 
 
 @pytest.mark.parametrize("function", UOSFunctions.enumerate_functions())
-def test_device_function(uos_device, function: UOSFunction):
+def test_device_function(uos_device: UOSDevice, function: UOSFunction):
     """Checks the UOS functions respond correctly."""
     for volatility in Persistence:
-        if volatility not in uos_device.device.functions_enabled[function.name]:
+        if volatility not in uos_device.get_functions_enabled()[function.name]:
             continue  # Ignore unsupported volatilities for device
-        pins_indices = uos_device.device.get_compatible_pins(function)
+        pins_indices = uos_device.get_compatible_pins(function)
         for pin_index in pins_indices:
             api_function = getattr(uos_device, function.name)
             call_arguments = {}
