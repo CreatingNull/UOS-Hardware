@@ -1,3 +1,10 @@
+Version 0.7.0
+-------------
+
+:Date: TBC
+
+* Removing use of poetry.
+
 Version 0.6.0
 -------------
 

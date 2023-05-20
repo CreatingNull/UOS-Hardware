@@ -1,35 +1,30 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "uos-hardware"
-version = "0.6.0"
+version = "0.7.0"
 description = "A hardware abstraction layer for microcontrollers running UOS compliant firmware."
-authors = ["nulltek <steve.public@nulltek.xyz>"]
-license = "MIT"
+authors = [
+    { name = "CreatingNull (Steve Richardson)", email="steve.public@nulltek.xyz" }
+]
+license = { text = "MIT License" }
 readme = "README.md"
-homepage = "https://github.com/CreatingNull/UOS-Hardware"
-documentation = "https://uos-hardware.nulltek.xyz"
-packages = [
-    { include = "uoshardware" }
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "pyserial",
 ]
 
-[tool.poetry.dependencies]
-# Note if changing project python versions considerations should be made for github workflow version.
-python = "^3.10"
-pyserial = "^3.5"
+[project.urls]
+homepage = "https://github.com/CreatingNull/UOS-Hardware"
+documentation = "https://uos-hardware.nulltek.xyz"
 
-[tool.poetry.group.dev.dependencies]
-coverage = {extras = ["toml"], version = "^7.0.3"}
-pytest = "^7.2.0"
-pre-commit = "^2.21.0"
-pylint = "^2.15.9"
-tox = "^4.2.5"
-
-[tool.poetry.group.docs.dependencies]
-Sphinx = "^5.3.0"
-sphinx-rtd-theme = "^1.1.1"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools]
+packages = ["uoshardware", "uoshardware.devices", "uoshardware.interface"]
 
 [tool.coverage.run]
 branch = true
