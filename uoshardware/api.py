@@ -58,7 +58,8 @@ class UOSDevice:  # dead: disable
     """Class for high level object-orientated control of UOS devices.
 
     :ivar identity: The type of device, this is must have a valid device in the config.
-    :ivar address: Compliant connection string for identifying the device and interface.
+    :ivar address: Compliant connection string for identifying the
+        device and interface.
     """
 
     __device: Device  # Device definitions as parsed from a compatible ini.
@@ -158,9 +159,11 @@ class UOSDevice:  # dead: disable
     ) -> ComResult:
         """Read a GPIO pins level from device and returns the value.
 
-        :param pin: The numeric number of the pin as defined in the dictionary for that device.
+        :param pin: The numeric number of the pin as defined in the
+                dictionary for that device.
         :param pull_up: Enable the internal pull-up resistor. Default is false.
-        :param volatility: How volatile should the command be, use constants from uoshardware.
+        :param volatility: How volatile should the command be, use
+                constants from uoshardware.
         :return: ComResult object.
         """
         result = self.__execute_instruction(
@@ -210,7 +213,8 @@ class UOSDevice:  # dead: disable
     def reset_all_io(self, volatility=Persistence.RAM) -> ComResult:
         """Execute the reset IO at the defined volatility level.
 
-        :param volatility: Where should the pins reset from, use constants from uoshardware.
+        :param volatility: Where should the pins reset from, use
+                constants from uoshardware.
         :return: ComResult object containing the result of the reset operation..
         """
         return self.__execute_instruction(
@@ -251,7 +255,8 @@ class UOSDevice:  # dead: disable
         :param instruction_data: device_functions from the LUT, payload ect.
         :param retry: Allows the instruction to retry execution when fails.
         :return: ComResult object
-        :raises: UOSUnsupportedError if function is not possible on the loaded device.
+        :raises: UOSUnsupportedError if function is not possible on the
+                loaded device.
         """
         if (
             function.name not in self.__device.functions_enabled

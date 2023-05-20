@@ -17,7 +17,8 @@ class Serial(UOSInterface):
     """Pyserial class that handles reading / writing to ports.
 
     :ivar _device: Holds the pyserial device once opened. None if not opened.
-    :ivar _connection: Holds the standard connection string 'Interface'|'OS Connection String.
+    :ivar _connection: Holds the standard connection string
+        'Interface'|'OS Connection String.
     :ivar _port: Holds the port class, none type if device not instantiated.
     :ivar _kwargs: Additional keyword arguments as defined in the documentation.
     """
@@ -100,7 +101,8 @@ class Serial(UOSInterface):
         """Build and execute a new instruction packet.
 
         :param packet: A tuple containing the uint8 npc packet for the UOS instruction.
-        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        :return: Tuple containing a status boolean and index 0 and a
+                result-set dict at index 1.
         """
         if self._device is None:
             raise UOSCommunicationError(
@@ -171,7 +173,8 @@ class Serial(UOSInterface):
     def hard_reset(self):
         """Manually drive the DTR line low to reset the device.
 
-        :return: Tuple containing a status boolean and index 0 and a result-set dict at index 1.
+        :return: Tuple containing a status boolean and index 0 and a
+                result-set dict at index 1.
         """
         if self._device is None:
             raise UOSCommunicationError("Connection must be open to hard reset device.")
