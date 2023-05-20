@@ -184,8 +184,10 @@ class UOSInterface(metaclass=ABCMeta):
 
         :param packet: A tuple containing the uint8 npc packet for the UOS instruction.
         :returns: ComResult object.
-        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
-        :raises: UOSCommunicationError if there is a problem completing the action.
+        :raises: UOSUnsupportedError if the interface hasn't been built
+                correctly.
+        :raises: UOSCommunicationError if there is a problem completing
+                the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.execute_instruction.__name__} prototype."
@@ -200,8 +202,10 @@ class UOSInterface(metaclass=ABCMeta):
         :param expect_packets: How many packets including ACK to expect
         :param timeout_s: The maximum time this function will wait for data.
         :return: COM Result object.
-        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
-        :raises: UOSCommunicationError if there is a problem completing the action.
+        :raises: UOSUnsupportedError if the interface hasn't been built
+                correctly.
+        :raises: UOSCommunicationError if there is a problem completing
+                the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.read_response.__name__} prototype."
@@ -212,8 +216,10 @@ class UOSInterface(metaclass=ABCMeta):
         """UOS loop reset functionality should be as hard a reset as possible.
 
         :return: COM Result object.
-        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
-        :raises: UOSCommunicationError if there is a problem completing the action.
+        :raises: UOSUnsupportedError if the interface hasn't been built
+                correctly.
+        :raises: UOSCommunicationError if there is a problem completing
+                the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.hard_reset.__name__} prototype"
@@ -223,8 +229,10 @@ class UOSInterface(metaclass=ABCMeta):
     def open(self):
         """Abstract method for opening a connection to a UOSInterface.
 
-        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
-        :raises: UOSCommunicationError if there is a problem completing the action.
+        :raises: UOSUnsupportedError if the interface hasn't been built
+                correctly.
+        :raises: UOSCommunicationError if there is a problem completing
+                the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.open.__name__} prototype."
@@ -234,8 +242,10 @@ class UOSInterface(metaclass=ABCMeta):
     def close(self):
         """Abstract method for closing a connection to a UOSInterface.
 
-        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
-        :raises: UOSCommunicationError if there is a problem completing the action.
+        :raises: UOSUnsupportedError if the interface hasn't been built
+                correctly.
+        :raises: UOSCommunicationError if there is a problem completing
+                the action.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
@@ -246,7 +256,8 @@ class UOSInterface(metaclass=ABCMeta):
         """Abstract method for checking if a connection is being held active.
 
         :return: Success boolean.
-        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        :raises: UOSUnsupportedError if the interface hasn't been built
+                correctly.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
@@ -258,7 +269,8 @@ class UOSInterface(metaclass=ABCMeta):
         """Return a list of UOSDevices visible to the driver.
 
         :return: A list of possible UOSInterfaces on the server.
-        :raises: UOSUnsupportedError if the interface hasn't been built correctly.
+        :raises: UOSUnsupportedError if the interface hasn't been built
+                correctly.
         """
         raise UOSUnsupportedError(
             f"UOSInterfaces must over-ride {UOSInterface.enumerate_devices.__name__} prototype."
