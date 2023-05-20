@@ -12,7 +12,7 @@ from re import Match, match
 
 sys.path.insert(0, os.path.abspath("../"))
 
-from uoshardware import PROJECT, __author__, __copyright__, __version__
+from uoshardware import PROJECT, __author__, __copyright__, __version__  # noqa
 
 project = PROJECT
 # Copyright name shadowed by sphinx design.

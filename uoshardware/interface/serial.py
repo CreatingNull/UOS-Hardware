@@ -137,9 +137,8 @@ class Serial(UOSInterface):
         byte_index = -1  # tracks the byte position index of the current packet
         packet_index = 0  # tracks the packet number being received 0 = ACK
         try:
-            while (
-                timeout_s * 1000000000
-            ) > time_ns() - start_ns and byte_index > -2:  # read until packet or timeout
+            while (timeout_s * 1000000000) > time_ns() - start_ns and byte_index > -2:
+                # read until packet or timeout
                 num_bytes = self._device.in_waiting
                 for _ in range(num_bytes):
                     byte_in = self._device.read(1)

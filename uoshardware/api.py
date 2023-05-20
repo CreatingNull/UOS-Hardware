@@ -28,7 +28,8 @@ def enumerate_system_devices(  # dead: disable
 ) -> list:
     """Iterate through all interfaces and locates available devices.
 
-    :param interface_filter: Interface enum to limit the search to a single interface type.
+    :param interface_filter: Interface enum to limit the search to a
+    single interface type.
     :return: A list of uosinterface objects.
     """
     system_devices = []
@@ -80,10 +81,12 @@ class UOSDevice:  # dead: disable
         """Instantiate a UOS device instance for communication.
 
         :param identity: Specify the type of device, this must exist in the device LUT.
-        :param address: Compliant connection string for identifying the device and interface.
+        :param address: Compliant connection string for identifying the device and
+        interface.
         :param interface: Set the type of interface to use for communication.
         loading: Alter the loading strategy for managing the communication.
-        :param kwargs: Additional optional connection parameters as defined in documentation.
+        :param kwargs: Additional optional connection parameters as defined in
+        documentation.
         """
         self.address = address
         self.__kwargs = kwargs
@@ -137,9 +140,11 @@ class UOSDevice:  # dead: disable
     ) -> ComResult:
         """Set a pin to digital output mode and sets a level on that pin.
 
-        :param pin: The numeric number of the pin as defined in the dictionary for that device.
+        :param pin: The numeric number of the pin as defined in the dictionary
+        for that device.
         :param level: The output level, 0 - low, 1 - High.
-        :param volatility: How volatile should the command be, use constants from uoshardware.
+        :param volatility: How volatile should the command be, use constants
+        from uoshardware.
         :return: ComResult object.
         """
         return self.__execute_instruction(
@@ -239,7 +244,8 @@ class UOSDevice:  # dead: disable
     def close(self):
         """Release connection, must be called explicitly if loading is eager.
 
-        :raises: UOSCommunicationError - Problem closing the connection to an active device.
+        :raises: UOSCommunicationError - Problem closing the connection
+        to an active device.
         """
         self.__device_interface.close()
 

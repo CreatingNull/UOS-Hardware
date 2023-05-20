@@ -116,7 +116,8 @@ def test_get_npc_checksum(test_packet_data: tuple, expected_lrc: int):
 def test_get_npc_packet(test_packet: Packet):
     """Checks packets are formed correctly from some known data."""
     print(
-        f"\n -> addr_to: {test_packet.address_to}, addr_from: {test_packet.address_from}, "
+        f"\n -> addr_to: {test_packet.address_to}, "
+        f"addr_from: {test_packet.address_from}, "
         f"payload: {test_packet.payload}, packet: {test_packet.binary!r}"
     )
     assert (

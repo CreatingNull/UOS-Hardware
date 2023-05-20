@@ -190,7 +190,8 @@ class UOSInterface(metaclass=ABCMeta):
                 the action.
         """
         raise UOSUnsupportedError(
-            f"UOSInterfaces must over-ride {UOSInterface.execute_instruction.__name__} prototype."
+            "UOSInterfaces must over-ride "
+            f"{UOSInterface.execute_instruction.__name__} prototype."
         )
 
     @abstractmethod
@@ -208,7 +209,8 @@ class UOSInterface(metaclass=ABCMeta):
                 the action.
         """
         raise UOSUnsupportedError(
-            f"UOSInterfaces must over-ride {UOSInterface.read_response.__name__} prototype."
+            "UOSInterfaces must over-ride "
+            f"{UOSInterface.read_response.__name__} prototype."
         )
 
     @abstractmethod
@@ -222,7 +224,8 @@ class UOSInterface(metaclass=ABCMeta):
                 the action.
         """
         raise UOSUnsupportedError(
-            f"UOSInterfaces must over-ride {UOSInterface.hard_reset.__name__} prototype"
+            "UOSInterfaces must over-ride "
+            f"{UOSInterface.hard_reset.__name__} prototype"
         )
 
     @abstractmethod
@@ -235,7 +238,7 @@ class UOSInterface(metaclass=ABCMeta):
                 the action.
         """
         raise UOSUnsupportedError(
-            f"UOSInterfaces must over-ride {UOSInterface.open.__name__} prototype."
+            "UOSInterfaces must over-ride " f"{UOSInterface.open.__name__} prototype."
         )
 
     @abstractmethod
@@ -248,7 +251,7 @@ class UOSInterface(metaclass=ABCMeta):
                 the action.
         """
         raise UOSUnsupportedError(
-            f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
+            "UOSInterfaces must over-ride " f"{UOSInterface.close.__name__} prototype."
         )
 
     @abstractmethod
@@ -260,7 +263,7 @@ class UOSInterface(metaclass=ABCMeta):
                 correctly.
         """
         raise UOSUnsupportedError(
-            f"UOSInterfaces must over-ride {UOSInterface.close.__name__} prototype."
+            "UOSInterfaces must over-ride " f"{UOSInterface.close.__name__} prototype."
         )
 
     @staticmethod
@@ -273,7 +276,8 @@ class UOSInterface(metaclass=ABCMeta):
                 correctly.
         """
         raise UOSUnsupportedError(
-            f"UOSInterfaces must over-ride {UOSInterface.enumerate_devices.__name__} prototype."
+            "UOSInterfaces must over-ride "
+            f"{UOSInterface.enumerate_devices.__name__} prototype."
         )
 
 
@@ -363,7 +367,8 @@ class Device:
         for sample_index, pin in enumerate(result.tx_packet.payload):
             if pin not in self.pins:
                 raise UOSRuntimeError(
-                    f"Can't update ADC samples on pin {pin} as it's invalid for {self.name}."
+                    f"Can't update ADC samples on pin {pin} "
+                    f"as it's invalid for {self.name}."
                 )
             self.pins[pin].adc_reading = ADCSample(
                 sample_values[sample_index * 2 : sample_index * 2 + 2],
@@ -389,7 +394,8 @@ class Device:
             pin = result.tx_packet.payload[2 * sample_index]
             if pin not in self.pins:
                 raise UOSRuntimeError(
-                    f"Can't update GPIO samples on pin {pin} as it's invalid for {self.name}."
+                    f"Can't update GPIO samples on pin {pin} "
+                    f"as it's invalid for {self.name}."
                 )
             self.pins[pin].gpio_reading = DigitalSample(sample_values[sample_index])
             logger.debug(

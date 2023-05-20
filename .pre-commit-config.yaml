@@ -17,6 +17,12 @@ repos:
     -   id: check-case-conflict
     -   id: check-ast
 
+# Verify the contents of pyproject.toml
+-   repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.13
+    hooks:
+      - id: validate-pyproject
+
 # Updating code to use modern python patterns where available.
 -   repo: https://github.com/asottile/pyupgrade
     rev: v3.4.0
@@ -60,6 +66,42 @@ repos:
             '--exclude=conf.py'  # Ignore the sphinx config as this is used by an external tool.
         ]
 
+# Lint documentation source.
+-   repo: https://github.com/sphinx-contrib/sphinx-lint
+    # Make sure to also update the additional dependency pin
+    rev: v0.6.7
+    hooks:
+    -   id: sphinx-lint
+
+# lint documentation
+-   repo: https://github.com/PyCQA/doc8
+    rev: v1.1.1
+    hooks:
+    -   id: doc8
+
+# Lint docstrings.
+-   repo: https://github.com/PyCQA/pydocstyle
+    # Waiting for a 3.10 release on pypi
+    rev: "6.3.0"
+    hooks:
+    -   id: pydocstyle
+        additional_dependencies:
+            # TOML support only added natively in python 3.11
+            - toml
+
+# Static typehint linting.
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.3.0
+    hooks:
+    -   id: mypy
+
+# A faster python linter
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  # Ruff version.
+  rev: 'v0.0.269'
+  hooks:
+    - id: ruff
+
 # Lint code using libs in project venv.
 -   repo: local
     hooks:
@@ -92,32 +134,3 @@ repos:
     -   id: bandit
         # Assert is used exclusively in pytest.
         args: ['--skip=B101']
-
-# Lint documentation source.
--   repo: https://github.com/sphinx-contrib/sphinx-lint
-    # Make sure to also update the additional dependency pin
-    rev: v0.6.7
-    hooks:
-    -   id: sphinx-lint
-
-# lint documentation
--   repo: https://github.com/PyCQA/doc8
-    rev: v1.1.1
-    hooks:
-    -   id: doc8
-
-# Lint docstrings.
--   repo: https://github.com/PyCQA/pydocstyle
-    # Waiting for a 3.10 release on pypi
-    rev: "6.3.0"
-    hooks:
-    -   id: pydocstyle
-        additional_dependencies:
-            # TOML support only added natively in python 3.11
-            - toml
-
-# Static typehint linting.
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.3.0
-    hooks:
-    -   id: mypy
