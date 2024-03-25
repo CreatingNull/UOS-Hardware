@@ -1,4 +1,5 @@
 """Packages used to define Devices supported by the library."""
+
 from dataclasses import dataclass
 
 from uoshardware.abstractions import Device
@@ -9,9 +10,8 @@ from uoshardware.devices._arduino import _ARDUINO_NANO_3, _ARDUINO_UNO_3
 class Devices:
     """Names for supported hardware linking to the Device object used.
 
-    :cvar hwid_0: device: _ARDUINO_NANO_3
-    :cvar arduino_nano: device: _ARDUINO_NANO_3
-    :cvar arduino_uno: device: _ARDUINO_NANO_3
+    :cvar hwid_0: device: _ARDUINO_NANO_3 :cvar arduino_nano: device:
+    _ARDUINO_NANO_3 :cvar arduino_uno: device: _ARDUINO_NANO_3
     """
 
     # Lookup constants linking devices to importable names

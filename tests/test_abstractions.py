@@ -1,4 +1,5 @@
 """Unit tests for the `abstractions` module."""
+
 import pytest
 
 from tests import Packet

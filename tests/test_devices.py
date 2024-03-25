@@ -1,4 +1,5 @@
 """Tests for the devices module."""
+
 import pytest
 
 from uoshardware import UOSUnsupportedError

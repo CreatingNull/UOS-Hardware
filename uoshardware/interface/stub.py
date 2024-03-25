@@ -1,4 +1,5 @@
 """Package is used as a simulated UOSInterface for test purposes."""
+
 from uoshardware import UOSCommunicationError
 from uoshardware.abstractions import ComResult, NPCPacket, UOSInterface
 
