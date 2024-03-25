@@ -1,4 +1,5 @@
 """Module defining the base class and static func for interfaces."""
+
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -182,12 +183,13 @@ class UOSInterface(metaclass=ABCMeta):
     def execute_instruction(self, packet: NPCPacket) -> ComResult:  # dead: disable
         """Abstract method for executing instructions on UOSInterfaces.
 
-        :param packet: A tuple containing the uint8 npc packet for the UOS instruction.
+        :param packet: A tuple containing the uint8 npc packet for the
+            UOS instruction.
         :returns: ComResult object.
         :raises: UOSUnsupportedError if the interface hasn't been built
-                correctly.
+            correctly.
         :raises: UOSCommunicationError if there is a problem completing
-                the action.
+            the action.
         """
         raise UOSUnsupportedError(
             "UOSInterfaces must over-ride "
@@ -201,12 +203,13 @@ class UOSInterface(metaclass=ABCMeta):
         """Read ACK and Data packets from a UOSInterface.
 
         :param expect_packets: How many packets including ACK to expect
-        :param timeout_s: The maximum time this function will wait for data.
+        :param timeout_s: The maximum time this function will wait for
+            data.
         :return: COM Result object.
         :raises: UOSUnsupportedError if the interface hasn't been built
-                correctly.
+            correctly.
         :raises: UOSCommunicationError if there is a problem completing
-                the action.
+            the action.
         """
         raise UOSUnsupportedError(
             "UOSInterfaces must over-ride "
@@ -219,9 +222,9 @@ class UOSInterface(metaclass=ABCMeta):
 
         :return: COM Result object.
         :raises: UOSUnsupportedError if the interface hasn't been built
-                correctly.
+            correctly.
         :raises: UOSCommunicationError if there is a problem completing
-                the action.
+            the action.
         """
         raise UOSUnsupportedError(
             "UOSInterfaces must over-ride "
@@ -233,9 +236,9 @@ class UOSInterface(metaclass=ABCMeta):
         """Abstract method for opening a connection to a UOSInterface.
 
         :raises: UOSUnsupportedError if the interface hasn't been built
-                correctly.
+            correctly.
         :raises: UOSCommunicationError if there is a problem completing
-                the action.
+            the action.
         """
         raise UOSUnsupportedError(
             "UOSInterfaces must over-ride " f"{UOSInterface.open.__name__} prototype."
@@ -246,9 +249,9 @@ class UOSInterface(metaclass=ABCMeta):
         """Abstract method for closing a connection to a UOSInterface.
 
         :raises: UOSUnsupportedError if the interface hasn't been built
-                correctly.
+            correctly.
         :raises: UOSCommunicationError if there is a problem completing
-                the action.
+            the action.
         """
         raise UOSUnsupportedError(
             "UOSInterfaces must over-ride " f"{UOSInterface.close.__name__} prototype."
@@ -260,7 +263,7 @@ class UOSInterface(metaclass=ABCMeta):
 
         :return: Success boolean.
         :raises: UOSUnsupportedError if the interface hasn't been built
-                correctly.
+            correctly.
         """
         raise UOSUnsupportedError(
             "UOSInterfaces must over-ride " f"{UOSInterface.close.__name__} prototype."
@@ -273,7 +276,7 @@ class UOSInterface(metaclass=ABCMeta):
 
         :return: A list of possible UOSInterfaces on the server.
         :raises: UOSUnsupportedError if the interface hasn't been built
-                correctly.
+            correctly.
         """
         raise UOSUnsupportedError(
             "UOSInterfaces must over-ride "

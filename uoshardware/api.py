@@ -1,4 +1,5 @@
 """Provides the HAL layer for communicating with the hardware."""
+
 from uoshardware import (
     Loading,
     Persistence,
@@ -29,7 +30,7 @@ def enumerate_system_devices(  # dead: disable
     """Iterate through all interfaces and locates available devices.
 
     :param interface_filter: Interface enum to limit the search to a
-    single interface type.
+        single interface type.
     :return: A list of uosinterface objects.
     """
     system_devices = []
@@ -44,7 +45,8 @@ def enumerate_system_devices(  # dead: disable
 def get_device_definition(identity: str) -> Device | None:
     """Look up the system config dictionary for the defined device mappings.
 
-    :param identity: String containing the lookup key of the device in the dictionary.
+    :param identity: String containing the lookup key of the device in
+        the dictionary.
     :return: Device Object or None if not found
     """
     if identity is not None and hasattr(Devices, identity):
@@ -58,9 +60,9 @@ def get_device_definition(identity: str) -> Device | None:
 class UOSDevice:  # dead: disable
     """Class for high level object-orientated control of UOS devices.
 
-    :ivar identity: The type of device, this is must have a valid device in the config.
-    :ivar address: Compliant connection string for identifying the
-        device and interface.
+    :ivar identity: The type of device, this is must have a valid device
+    in the config. :ivar address: Compliant connection string for
+    identifying the     device and interface.
     """
 
     __device: Device  # Device definitions as parsed from a compatible ini.
@@ -165,10 +167,11 @@ class UOSDevice:  # dead: disable
         """Read a GPIO pins level from device and returns the value.
 
         :param pin: The numeric number of the pin as defined in the
-                dictionary for that device.
-        :param pull_up: Enable the internal pull-up resistor. Default is false.
+            dictionary for that device.
+        :param pull_up: Enable the internal pull-up resistor. Default is
+            false.
         :param volatility: How volatile should the command be, use
-                constants from uoshardware.
+            constants from uoshardware.
         :return: ComResult object.
         """
         result = self.__execute_instruction(
@@ -219,8 +222,9 @@ class UOSDevice:  # dead: disable
         """Execute the reset IO at the defined volatility level.
 
         :param volatility: Where should the pins reset from, use
-                constants from uoshardware.
-        :return: ComResult object containing the result of the reset operation..
+            constants from uoshardware.
+        :return: ComResult object containing the result of the reset
+            operation..
         """
         return self.__execute_instruction(
             UOSFunctions.reset_all_io,
@@ -258,11 +262,13 @@ class UOSDevice:  # dead: disable
         """Execute a generic UOS function and get the result.
 
         :param function: The name of the function in the OOL.
-        :param instruction_data: device_functions from the LUT, payload ect.
-        :param retry: Allows the instruction to retry execution when fails.
+        :param instruction_data: device_functions from the LUT, payload
+            ect.
+        :param retry: Allows the instruction to retry execution when
+            fails.
         :return: ComResult object
         :raises: UOSUnsupportedError if function is not possible on the
-                loaded device.
+            loaded device.
         """
         if (
             function.name not in self.__device.functions_enabled
@@ -373,7 +379,8 @@ class UOSDevice:  # dead: disable
     def get_functions_enabled(self) -> dict:  # dead: disable
         """Return functions enabled for the device.
 
-        :return: Dictionary of function names to list of Persistence levels.
+        :return: Dictionary of function names to list of Persistence
+            levels.
         """
         return self.__device.functions_enabled
 

@@ -1,4 +1,5 @@
 """Module defining the low level UOSImplementation for serial port devices."""
+
 import platform
 from time import sleep, time_ns
 
@@ -16,11 +17,11 @@ if platform.system() == "Linux":
 class Serial(UOSInterface):
     """Pyserial class that handles reading / writing to ports.
 
-    :ivar _device: Holds the pyserial device once opened. None if not opened.
-    :ivar _connection: Holds the standard connection string
-        'Interface'|'OS Connection String.
-    :ivar _port: Holds the port class, none type if device not instantiated.
-    :ivar _kwargs: Additional keyword arguments as defined in the documentation.
+    :ivar _device: Holds the pyserial device once opened. None if not
+    opened. :ivar _connection: Holds the standard connection string
+    'Interface'|'OS Connection String. :ivar _port: Holds the port
+    class, none type if device not instantiated. :ivar _kwargs:
+    Additional keyword arguments as defined in the documentation.
     """
 
     _device = None
@@ -100,9 +101,10 @@ class Serial(UOSInterface):
     def execute_instruction(self, packet: NPCPacket):
         """Build and execute a new instruction packet.
 
-        :param packet: A tuple containing the uint8 npc packet for the UOS instruction.
+        :param packet: A tuple containing the uint8 npc packet for the
+            UOS instruction.
         :return: Tuple containing a status boolean and index 0 and a
-                result-set dict at index 1.
+            result-set dict at index 1.
         """
         if self._device is None:
             raise UOSCommunicationError(
@@ -124,7 +126,8 @@ class Serial(UOSInterface):
         """Read ACK and response packets from the serial device.
 
         :param expect_packets: How many packets including ACK to expect.
-        :param timeout_s: The maximum time this function will wait for data.
+        :param timeout_s: The maximum time this function will wait for
+            data.
         :return: ComResult object.
         """
         if self._device is None:
@@ -173,7 +176,7 @@ class Serial(UOSInterface):
         """Manually drive the DTR line low to reset the device.
 
         :return: Tuple containing a status boolean and index 0 and a
-                result-set dict at index 1.
+            result-set dict at index 1.
         """
         if self._device is None:
             raise UOSCommunicationError("Connection must be open to hard reset device.")
@@ -206,7 +209,8 @@ class Serial(UOSInterface):
         :param byte_index: The index of the last 'valid' byte found.
         :param byte_in: The current byte for inspection.
         :param packet: The current packet of validated bytes.
-        :return: Tuple containing the updated byte index and updated packet.
+        :return: Tuple containing the updated byte index and updated
+            packet.
         """
         if byte_index == -1:  # start symbol
             if byte_in == b">":

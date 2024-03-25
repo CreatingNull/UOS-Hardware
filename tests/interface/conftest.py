@@ -1,4 +1,5 @@
 """Module used for fixture initialisation in interface tests."""
+
 import pytest
 
 

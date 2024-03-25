@@ -1,4 +1,5 @@
 """Package defining io interfaces used for NPC Comms."""
+
 from enum import Enum
 
 from uoshardware.interface.serial import Serial

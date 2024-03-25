@@ -1,4 +1,5 @@
 """Module for package test configuration, scope=session."""
+
 import pytest
 
 from uoshardware import Loading

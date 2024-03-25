@@ -1,4 +1,5 @@
 """Unit tests for the api module."""
+
 from inspect import signature
 
 import pytest
