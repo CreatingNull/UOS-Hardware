@@ -1,4 +1,5 @@
 """Packages used to define Devices supported by the library."""
+
 from dataclasses import dataclass
 
 from uoshardware.abstractions import Device

@@ -1,4 +1,5 @@
 """The high level interface for communicating with UOS devices."""
+
 import logging
 from enum import Enum
 

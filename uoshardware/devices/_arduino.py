@@ -1,4 +1,5 @@
 """Module contains definitions for arduino devices."""
+
 from uoshardware import Persistence
 from uoshardware.abstractions import Device, Pin, UOSFunctions
 from uoshardware.interface import Interface

@@ -1,4 +1,5 @@
 """Module for testing the interface package."""
+
 from time import sleep
 
 import pytest
